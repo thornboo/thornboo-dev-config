@@ -13,7 +13,7 @@ thornboo-dev-config/
 ├── snow/            # Snow (~/.snow/)
 ├── cc-switch/       # cc-switch (~/.cc-switch/)
 ├── AGENTS.md        # 跨工具通用 Agent 指令 (~/AGENTS.md)
-├── sync.sh          # 一键同步备份脚本
+├── sync.sh          # 交互式备份脚本（依赖 fzf）
 └── .gitignore
 ```
 
@@ -22,11 +22,11 @@ thornboo-dev-config/
 ### 备份配置
 
 ```bash
+# 交互式选择要备份的工具（Tab/空格多选，Ctrl-A 全选，Enter 确认）
+./sync.sh
+
 # 预览将要同步的内容（不会写入任何文件）
 ./sync.sh --dry-run
-
-# 正式执行同步
-./sync.sh
 ```
 
 同步完成后手动 commit 并 push：
@@ -57,17 +57,17 @@ cp AGENTS.md ~/AGENTS.md
 
 | 工具 | 备份内容 | 排除内容 |
 |------|---------|---------|
-| Claude Code | agents、rules、settings、plugins 元数据、ccline、skills | sessions、history、cache、backups、telemetry |
-| Codex | config.toml、skills、auth.json | sessions、logs、sqlite 数据库、tmp |
-| Gemini | settings.json | history、tmp、state、trustedFolders |
-| OpenCode | opencode.json、package.json | node_modules、bun.lock |
-| Snow | commands、hooks、profiles、各类配置 json | history、log、sessions、snapshots、notebook |
-| cc-switch | settings.json、skills | backups、logs、cc-switch.db |
+| Claude Code | agents、rules、settings、plugins 元数据、ccline 配置及主题、skills | sessions、history、cache、tasks、paste-cache、ccline 二进制、plugins/marketplaces、telemetry |
+| Codex | config.toml、skills（用户自定义）、auth.json、version.json | sessions、logs、sqlite 数据库、tmp、skills/.system |
+| Gemini | settings.json、.env、trustedFolders.json | history、tmp、state、installation_id |
+| OpenCode | opencode.json | node_modules、bun.lock |
+| Snow | 各类配置 json、profiles | history、log、sessions、snapshots、notebook、mcp-config.json.save |
+| cc-switch | settings.json | backups、logs、cc-switch.db |
 
 ## 相关工具
 
 - [Claude Code](https://claude.ai/code) — Anthropic 官方 CLI
-- [everything-claude-code](https://github.com/affaan-m/everything-claude-code) — Claude Code 整合配置包（已安装 v1.8.0）
+- [everything-claude-code](https://github.com/affaan-m/everything-claude-code) — Claude Code 整合配置包
 - [Codex](https://github.com/openai/codex) — OpenAI CLI
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) — Google Gemini CLI
 - [OpenCode](https://opencode.ai) — 开源 AI 编码工具
