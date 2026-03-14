@@ -1,1 +1,67 @@
 .DS_Store
+
+# 运行时数据兜底排除
+
+# Claude Code
+claude/backups/
+claude/cache/
+claude/ccline/ccline
+claude/file-history/
+claude/history.jsonl
+claude/homunculus/projects/
+claude/homunculus/projects.json
+claude/metrics/
+claude/paste-cache/
+claude/plans/
+claude/plugins/cache/
+claude/plugins/install-counts-cache.json
+claude/plugins/marketplaces/
+claude/projects/
+claude/session-env/
+claude/sessions/
+claude/shell-snapshots/
+claude/tasks/
+claude/telemetry/
+
+# Codex
+codex/log/
+codex/logs_*.sqlite
+codex/*.sqlite-shm
+codex/*.sqlite-wal
+codex/memories/
+codex/sessions/
+codex/shell_snapshots/
+codex/skills/.system/
+codex/state_*.sqlite
+codex/tmp/
+codex/history.jsonl
+
+# Gemini
+gemini/history/
+gemini/tmp/
+gemini/installation_id
+gemini/projects.json
+gemini/state.json
+
+# OpenCode
+opencode/node_modules/
+opencode/bun.lock
+
+# Snow
+snow/history/
+snow/log/
+snow/notebook/
+snow/sessions/
+snow/snapshots/
+snow/todos/
+snow/usage/
+snow/active-profile.json
+snow/codebase.json
+snow/command-usage.json
+snow/history.json
+snow/mcp-config.json.save
+
+# cc-switch
+cc-switch/backups/
+cc-switch/logs/
+cc-switch/cc-switch.db

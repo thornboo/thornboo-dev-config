@@ -1,29 +1,29 @@
 {
+  "enabledPlugins": {
+    "claude-md-management@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "everything-claude-code@everything-claude-code": true,
+    "feature-dev@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+  },
   "env": {
     "ANTHROPIC_AUTH_TOKEN": "PROXY_MANAGED",
     "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "includeCoAuthoredBy": false,
+  "skipDangerousModePermissionPrompt": true,
   "statusLine": {
-    "type": "command",
     "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  },
-  "enabledPlugins": {
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "everything-claude-code@everything-claude-code": true,
-    "typescript-lsp@claude-plugins-official": true
-  },
-  "skipDangerousModePermissionPrompt": true
+    "padding": 0,
+    "type": "command"
+  }
 }
