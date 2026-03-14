@@ -20,6 +20,7 @@
     "openclaw": false
   },
   "currentProviderClaude": "db971591-9d65-4815-9052-ce586c619a07",
+  "currentProviderCodex": "fc2c40e9-e2d5-4f8c-98c8-d9b4d586f842",
   "skillSyncMethod": "copy",
   "backupRetainCount": 3,
   "preferredTerminal": "kitty"
