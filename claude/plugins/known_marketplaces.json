@@ -1,0 +1,26 @@
+{
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/claude-plugins-official",
+    "lastUpdated": "2026-03-14T04:11:55.188Z"
+  },
+  "ui-ux-pro-max-skill": {
+    "source": {
+      "source": "github",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+    },
+    "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/ui-ux-pro-max-skill",
+    "lastUpdated": "2026-03-13T18:37:17.526Z"
+  },
+  "everything-claude-code": {
+    "source": {
+      "source": "github",
+      "repo": "affaan-m/everything-claude-code"
+    },
+    "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/everything-claude-code",
+    "lastUpdated": "2026-03-13T18:38:52.929Z"
+  }
+}

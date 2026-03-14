@@ -1,0 +1,30 @@
+{
+  "snowcfg": {
+    "baseUrl": "https://api.snowcli.com/openai/v1",
+    "apiKey": "snow_iiCdabQOmcPy1L61Rn8QyvHwDHUDsV8a",
+    "requestMethod": "responses",
+    "advancedModel": "gpt-5.4",
+    "basicModel": "gpt-5.4",
+    "maxContextTokens": 120000,
+    "maxTokens": 32000,
+    "anthropicBeta": false,
+    "streamIdleTimeoutSec": 180,
+    "editSimilarityThreshold": 0.75,
+    "streamingDisplay": false,
+    "anthropicCacheTTL": "5m",
+    "enableAutoCompress": true,
+    "autoCompressThreshold": 80,
+    "showThinking": true,
+    "geminiThinking": {
+      "enabled": true,
+      "budget": 1024
+    },
+    "responsesReasoning": {
+      "enabled": true,
+      "effort": "xhigh"
+    },
+    "responsesVerbosity": "high",
+    "responsesFastMode": true,
+    "toolResultTokenLimit": 100000
+  }
+}

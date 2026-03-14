@@ -1,0 +1,25 @@
+model_provider = "packycode"
+model = "gpt-5.4-xhigh"
+disable_response_storage = true
+model_reasoning_effort = "xhigh"
+
+[model_providers]
+
+[mcp_servers.blender]
+type = "stdio"
+command = "uvx"
+args = ["blender-mcp"]
+startup_timeout_sec = 30
+[model_providers.packycode]
+name = "packycode"
+wire_api = "responses"
+requires_openai_auth = true
+base_url = "http://127.0.0.1:15721/v1"
+
+[mcp_servers.context7]
+type = "stdio"
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[projects."/Users/thornboo/codeDongShen/farm-web"]
+trust_level = "trusted"

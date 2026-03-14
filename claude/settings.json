@@ -1,0 +1,14 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "PROXY_MANAGED",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "includeCoAuthoredBy": false,
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "command": "~/.claude/ccline/ccline",
+    "padding": 0,
+    "type": "command"
+  }
+}
