@@ -1,0 +1,8 @@
+{
+  "id": "1",
+  "subject": "迁移前端：HeroUI → shadcn/ui",
+  "description": "完整替换 HeroUI 为 shadcn/ui，重写所有页面和组件，改善视觉质量。步骤：1. 安装 shadcn/ui 依赖，移除 HeroUI；2. 重写 globals.css；3. 重写 providers.tsx；4. 重写 console-shell.tsx；5. 重写所有 form 组件；6. 重写所有页面。",
+  "status": "in_progress",
+  "blocks": [],
+  "blockedBy": []
+}

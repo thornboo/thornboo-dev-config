@@ -24,3 +24,6 @@ args = ["-y", "@upstash/context7-mcp"]
 
 [projects."/Users/thornboo/codeDongShen/farm-web"]
 trust_level = "trusted"
+
+[projects."/Users/thornboo/codeGithub/OpenMOSS"]
+trust_level = "trusted"
