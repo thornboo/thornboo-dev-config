@@ -163,3 +163,18 @@ function claude-kimi() {
     )
     env "${env_vars[@]}" claude "$@"
 }
+
+# 启动 Kimi 2.5 实例
+function claude-glm() {
+    local -a env_vars=(
+        "ANTHROPIC_BASE_URL=https://api.siliconflow.cn"
+        "ANTHROPIC_AUTH_TOKEN=<REDACTED>"
+        "ANTHROPIC_MODEL=Pro/zai-org/GLM-5.1"
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL=Pro/zai-org/GLM-5.1"
+        "ANTHROPIC_DEFAULT_SONNET_MODEL=Pro/zai-org/GLM-5.1"
+        "ANTHROPIC_DEFAULT_OPUS_MODEL=Pro/zai-org/GLM-5.1"
+        "ANTHROPIC_REASONING_MODEL=Pro/zai-org/GLM-5.1"
+        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
+    )
+    env "${env_vars[@]}" claude "$@"
+}

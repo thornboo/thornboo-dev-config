@@ -9,6 +9,7 @@ readonly RECORD_DIR_NAME="sync-records"
 
 ACTION=""
 DRY_RUN=false
+USE_EMOJI=true
 TARGETS=()
 SUMMARY_OK=0
 SUMMARY_SKIP=0
@@ -28,76 +29,122 @@ HISTORY_PATH=""
 CONFLICTS_PATH=""
 RECORDING_ACTIVE=false
 
+emoji_for_status() {
+  local status="$1"
+
+  if ! $USE_EMOJI; then
+    printf ''
+    return 0
+  fi
+
+  case "$status" in
+    INFO) printf 'ℹ️  ' ;;
+    OK) printf '✅ ' ;;
+    SKIP) printf '⏭️  ' ;;
+    WARN) printf '⚠️  ' ;;
+    ERROR) printf '❌ ' ;;
+    MASK) printf '🔐 ' ;;
+    COPY) printf '📦 ' ;;
+    MERGE) printf '🔀 ' ;;
+    DONE) printf '🎉 ' ;;
+    RECORD) printf '📝 ' ;;
+    *) printf '' ;;
+  esac
+}
+
+log_line() {
+  local stream="$1"
+  local status="$2"
+  local message="$3"
+  local emoji="$(emoji_for_status "$status")"
+  local line="  ${emoji}[$status] $message"
+
+  if [[ "$stream" == "stderr" ]]; then
+    printf '%s\n' "$line" >&2
+  else
+    printf '%s\n' "$line"
+  fi
+
+  if $RECORDING_ACTIVE; then
+    printf '%s\n' "$line" >> "$LATEST_LOG_PATH"
+  fi
+}
+
 log_section() {
-  printf '\n==> %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '\n==> %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  local line=""
+
+  if $USE_EMOJI; then
+    line="\n🚀 ==> $1"
+  else
+    line="\n==> $1"
+  fi
+
+  printf '%b\n' "$line"
+  if $RECORDING_ACTIVE; then printf '%b\n' "$line" >> "$LATEST_LOG_PATH"; fi
 }
 
 log_info() {
-  printf '  [INFO] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [INFO] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout INFO "$1"
 }
 
 log_ok() {
-  printf '  [OK] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [OK] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout OK "$1"
 }
 
 log_skip() {
-  printf '  [SKIP] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [SKIP] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout SKIP "$1"
 }
 
 log_warn() {
-  printf '  [WARN] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [WARN] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout WARN "$1"
 }
 
 log_error() {
-  printf '  [ERROR] %s\n' "$1" >&2
-  if $RECORDING_ACTIVE; then printf '  [ERROR] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stderr ERROR "$1"
 }
 
 log_mask() {
-  printf '  [MASK] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [MASK] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout MASK "$1"
 }
 
 log_copy() {
-  printf '  [COPY] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [COPY] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout COPY "$1"
 }
 
 log_merge() {
-  printf '  [MERGE] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '  [MERGE] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout MERGE "$1"
 }
 
 log_done() {
-  printf '\n[DONE] %s\n' "$1"
-  if $RECORDING_ACTIVE; then printf '\n[DONE] %s\n' "$1" >> "$LATEST_LOG_PATH"; fi
+  log_line stdout DONE "$1"
+}
+
+log_record() {
+  log_line stdout RECORD "$1"
 }
 
 print_update_usage() {
   cat <<'EOF_USAGE'
-Usage: ./update [--dry-run] [all|claude|codex|gemini|zshrc|kitty|snow|agents]...
+Usage: ./update [--dry-run] [--no-emoji] [all|claude|codex|gemini|zshrc|kitty|snow|agents]...
 
 Examples:
   ./update
   ./update claude
   ./update codex kitty
   ./update --dry-run zshrc
+  ./update --no-emoji codex
 EOF_USAGE
 }
 
 print_use_usage() {
   cat <<'EOF_USAGE'
-Usage: ./use [--dry-run] [all|claude|codex|gemini|zshrc|kitty|snow|agents]...
+Usage: ./use [--dry-run] [--no-emoji] [all|claude|codex|gemini|zshrc|kitty|snow|agents]...
 
 Examples:
   ./use claude
   ./use codex kitty
   ./use --dry-run zshrc
+  ./use --no-emoji codex
 EOF_USAGE
 }
 
@@ -156,6 +203,7 @@ parse_targets() {
 
   ACTION="$action"
   DRY_RUN=false
+  USE_EMOJI=true
   TARGETS=()
   SUMMARY_OK=0
   SUMMARY_SKIP=0
@@ -174,6 +222,9 @@ parse_targets() {
     case "$argument" in
       --dry-run|-n)
         DRY_RUN=true
+        ;;
+      --no-emoji)
+        USE_EMOJI=false
         ;;
       --help|-h)
         if [[ "$action" == "update" ]]; then
@@ -539,9 +590,56 @@ setup_run_recording() {
 
   RECORDING_ACTIVE=true
 
-  log_info "records: $RECORD_DIR"
+  log_record "records: $RECORD_DIR"
   log_info "targets: $RUN_TARGETS"
   log_info "dry-run: $DRY_RUN"
+}
+
+print_run_summary() {
+  local action_name="$1"
+
+  printf '\n'
+  log_info "summary for $action_name"
+  log_ok "succeeded: $SUMMARY_OK"
+
+  if [[ "$SUMMARY_SKIP" -gt 0 ]]; then
+    log_skip "skipped: $SUMMARY_SKIP"
+  else
+    log_info "skipped: 0"
+  fi
+
+  if [[ "$SUMMARY_FAIL" -gt 0 ]]; then
+    log_error "failed: $SUMMARY_FAIL"
+  else
+    log_info "failed: 0"
+  fi
+
+  if [[ "$SUMMARY_MASKED" -gt 0 ]]; then
+    log_mask "redacted files: $SUMMARY_MASKED"
+  else
+    log_info "redacted files: 0"
+  fi
+
+  if [[ "$SUMMARY_COPIED" -gt 0 ]]; then
+    log_copy "copied files: $SUMMARY_COPIED"
+  else
+    log_info "copied files: 0"
+  fi
+
+  if [[ "$SUMMARY_MERGED" -gt 0 ]]; then
+    log_merge "merged files: $SUMMARY_MERGED"
+  else
+    log_info "merged files: 0"
+  fi
+
+  if [[ "$SUMMARY_CONFLICTS" -gt 0 ]]; then
+    log_warn "conflicts: $SUMMARY_CONFLICTS (see $CONFLICTS_PATH)"
+  else
+    log_ok "conflicts: 0"
+  fi
+
+  log_record "latest log: $LATEST_LOG_PATH"
+  log_record "summary: $SUMMARY_PATH"
 }
 
 write_run_summary() {
@@ -791,7 +889,8 @@ run_update_main() {
     run_update_target "$tool"
   done
 
-  log_done "update finished (ok=$SUMMARY_OK skipped=$SUMMARY_SKIP failed=$SUMMARY_FAIL redacted=$SUMMARY_MASKED conflicts=$SUMMARY_CONFLICTS)"
+  log_done "update finished"
+  print_run_summary update
   write_run_summary
 }
 
@@ -804,6 +903,7 @@ run_use_main() {
     run_use_target "$tool"
   done
 
-  log_done "use finished (ok=$SUMMARY_OK skipped=$SUMMARY_SKIP failed=$SUMMARY_FAIL copied=$SUMMARY_COPIED merged=$SUMMARY_MERGED conflicts=$SUMMARY_CONFLICTS)"
+  log_done "use finished"
+  print_run_summary use
   write_run_summary
 }

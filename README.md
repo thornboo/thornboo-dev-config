@@ -50,6 +50,9 @@ thornboo-dev-config/
 
 # 预览模式（不会写入任何文件）
 ./update --dry-run codex
+
+# 关闭 emoji，输出纯文本日志
+./update --no-emoji codex
 ```
 
 ### 应用配置（写回本机）
@@ -63,6 +66,9 @@ thornboo-dev-config/
 
 # 预览模式
 ./use --dry-run codex
+
+# 关闭 emoji，输出纯文本日志
+./use --no-emoji codex
 ```
 
 说明：
@@ -71,6 +77,17 @@ thornboo-dev-config/
 - 对已脱敏的配置文件，会尽量保留你本机原有的 secret；无法安全恢复时会跳过并记录冲突
 
 ## 冲突与备份记录
+
+`update` 和 `use` 默认使用 emoji 状态标记，让日志更容易扫读：
+
+- `✅ [OK]` — 成功
+- `⏭️ [SKIP]` — 跳过
+- `🔐 [MASK]` — 已脱敏
+- `📦 [COPY]` — 已复制
+- `🔀 [MERGE]` — 已合并脱敏配置
+- `🎉 [DONE]` — 本次运行完成
+
+如果需要纯文本日志，可以加 `--no-emoji`。
 
 每次执行 `update` 或 `use`，都会在 `sync-records/` 下留下记录：
 

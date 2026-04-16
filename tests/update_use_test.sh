@@ -100,7 +100,8 @@ EOF_DATA
   assert_not_exists "$repo_dir/claude/history.jsonl"
   assert_contains "$repo_dir/claude/rules/golang/security.md" "api_key examples"
   assert_not_contains "$repo_dir/claude/rules/golang/security.md" "<REDACTED>"
-  assert_contains "$log_path" "[OK] update claude"
+  assert_contains "$log_path" "✅ [OK] update claude"
+  assert_contains "$repo_dir/sync-records/latest.log" "✅ [OK] update claude"
   assert_summary_contains "$repo_dir" "action=update"
   assert_summary_contains "$repo_dir" "targets=claude"
 }
@@ -152,7 +153,8 @@ EOF_DATA
   assert_contains "$repo_dir/AGENTS.md" "# Home AGENTS"
   assert_contains "$repo_dir/zsh/.zshrc" "<REDACTED>"
   assert_contains "$repo_dir/kitty/kitty.conf" "kitty-secret"
-  assert_contains "$log_path" "[DONE] update finished"
+  assert_contains "$log_path" "🎉 [DONE] update finished"
+  assert_contains "$log_path" "summary for update"
   assert_summary_contains "$repo_dir" "targets=claude,codex,gemini,zshrc,kitty,snow,agents"
 }
 
@@ -217,8 +219,8 @@ EOF_DATA
   assert_not_contains "$home_dir/.codex/config.toml" "<REDACTED>"
   assert_contains "$home_dir/.codex/auth.json" "real-secret"
   assert_not_contains "$home_dir/.codex/auth.json" "<REDACTED>"
-  assert_contains "$log_path" "[SKIP] codex auth.json"
-  assert_contains "$log_path" "[MERGE] codex config.toml"
+  assert_contains "$log_path" "⏭️  [SKIP] codex auth.json"
+  assert_contains "$log_path" "🔀 [MERGE] codex config.toml"
   assert_summary_contains "$repo_dir" "action=use"
   assert_summary_contains "$repo_dir" "conflicts=1"
   assert_contains "$repo_dir/sync-records/conflicts.log" "sensitive file skipped"
@@ -250,12 +252,38 @@ EOF_DATA
   assert_contains "$home_dir/.zshrc" "OPENAI_API_KEY=\"live-shell-secret\""
   assert_contains "$home_dir/.zshrc" "alias gs='git status'"
   assert_not_contains "$home_dir/.zshrc" "<REDACTED>"
-  assert_contains "$log_path" "[MERGE] zshrc .zshrc"
+  assert_contains "$log_path" "🔀 [MERGE] zshrc .zshrc"
+}
+
+
+run_no_emoji_case() {
+  local case_dir="$TMP_ROOT/no-emoji"
+  local repo_dir="$case_dir/repo"
+  local home_dir="$case_dir/home"
+  local log_path="$case_dir/output.log"
+
+  copy_repo "$repo_dir"
+
+  mkdir -p "$home_dir/.codex"
+  cat <<'EOF_DATA' > "$home_dir/.codex/config.toml"
+model = "gpt-5.4"
+EOF_DATA
+
+  (
+    cd "$repo_dir"
+    HOME="$home_dir" bash ./update --no-emoji codex > "$log_path"
+  )
+
+  assert_contains "$log_path" "[OK] update codex"
+  assert_contains "$log_path" "[DONE] update finished"
+  assert_not_contains "$log_path" "✅"
+  assert_not_contains "$repo_dir/sync-records/latest.log" "✅"
 }
 
 run_update_claude_case
 run_update_all_case
 run_update_codex_excludes_case
+run_no_emoji_case
 run_use_codex_case
 run_use_zshrc_case
 
