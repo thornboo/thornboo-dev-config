@@ -1,29 +1,94 @@
 {
   "enabledPlugins": {
-    "claude-md-management@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": false,
     "code-review@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "everything-claude-code@everything-claude-code": true,
-    "feature-dev@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": false,
     "figma@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
+    "pua@pua-skills": true,
+    "skill-creator@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "ui-ux-pro-max@ui-ux-pro-max-skill": true
   },
-  "env": {
-    "ANTHROPIC_AUTH_TOKEN": "PROXY_MANAGED",
-    "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  "extraKnownMarketplaces": {
+    "pua-skills": {
+      "source": {
+        "repo": "tanweai/pua",
+        "source": "github"
+      }
+    }
   },
   "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(pnpm:*)",
+      "Bash(bun:*)",
+      "Bash(yarn:*)",
+      "Bash(node:*)",
+      "Bash(python:*)",
+      "Bash(go:*)",
+      "Bash(cargo:*)",
+      "Bash(make:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(chmod:*)",
+      "Bash(which:*)",
+      "Bash(echo:*)",
+      "Bash(pwd)",
+      "Bash(env)",
+      "Bash(gh:*)",
+      "Bash(brew:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(swift:*)",
+      "Bash(kotlin:*)",
+      "Bash(gradle:*)",
+      "Bash(docker:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "mcp__*",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Agent",
+      "NotebookEdit",
+      "TodoWrite",
+      "WebFetch",
+      "WebSearch"
+    ]
+  },
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {
     "command": "~/.claude/ccline/ccline",
     "padding": 0,
     "type": "command"
+  },
+  "worktree": {
+    "symlinkDirectories": [
+      "node_modules",
+      ".venv",
+      "vendor",
+      ".gradle",
+      ".build",
+      ".cache",
+      "target",
+      "build",
+      "dist",
+      "__pycache__"
+    ]
   }
 }

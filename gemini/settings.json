@@ -3,5 +3,6 @@
     "auth": {
       "selectedType": "gemini-api-key"
     }
-  }
+  },
+  "mcpServers": {}
 }

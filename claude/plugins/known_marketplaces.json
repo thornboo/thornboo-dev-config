@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-03-14T16:20:30.296Z"
+    "lastUpdated": "2026-04-16T10:43:50.101Z"
   },
   "ui-ux-pro-max-skill": {
     "source": {
@@ -22,5 +22,13 @@
     },
     "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/everything-claude-code",
     "lastUpdated": "2026-03-13T18:38:52.929Z"
+  },
+  "pua-skills": {
+    "source": {
+      "source": "github",
+      "repo": "tanweai/pua"
+    },
+    "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/pua-skills",
+    "lastUpdated": "2026-03-17T13:19:19.719Z"
   }
 }

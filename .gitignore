@@ -23,6 +23,8 @@ claude/tasks/
 claude/telemetry/
 
 # Codex
+codex/.tmp/
+codex/installation_id
 codex/log/
 codex/logs_*.sqlite
 codex/*.sqlite-shm
@@ -55,3 +57,8 @@ snow/codebase.json
 snow/command-usage.json
 snow/history.json
 snow/mcp-config.json.save
+# Sync records
+sync-records/
+
+# Zsh and Kitty local runtime extras
+kitty/.DS_Store

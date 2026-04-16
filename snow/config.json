@@ -1,7 +1,7 @@
 {
   "snowcfg": {
     "baseUrl": "https://api.snowcli.com/openai/v1",
-    "apiKey": "snow_iiCdabQOmcPy1L61Rn8QyvHwDHUDsV8a",
+    "apiKey": "<REDACTED>",
     "requestMethod": "responses",
     "advancedModel": "gpt-5.4",
     "basicModel": "gpt-5.4",

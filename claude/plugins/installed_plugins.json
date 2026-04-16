@@ -4,70 +4,70 @@
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/frontend-design/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/frontend-design/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:05:10.457Z",
-        "lastUpdated": "2026-03-14T07:05:10.457Z",
+        "lastUpdated": "2026-03-26T07:03:39.469Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.2",
-        "version": "5.0.2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7",
+        "version": "5.0.7",
         "installedAt": "2026-03-14T07:05:11.885Z",
-        "lastUpdated": "2026-03-14T07:05:11.885Z",
+        "lastUpdated": "2026-04-12T14:25:38.904Z",
         "gitCommitSha": "363923f74aa9cd7b470c0aaa73dee629a8bfdc90"
       }
     ],
     "feature-dev@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/feature-dev/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/feature-dev/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:05:11.919Z",
-        "lastUpdated": "2026-03-14T07:05:11.919Z",
+        "lastUpdated": "2026-03-26T07:03:39.478Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
     "context7@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/context7/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/context7/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:02:02.661Z",
-        "lastUpdated": "2026-03-14T07:02:02.661Z",
+        "lastUpdated": "2026-03-26T07:03:39.452Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
     "code-review@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/code-review/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:05:11.908Z",
-        "lastUpdated": "2026-03-14T07:05:11.908Z",
+        "lastUpdated": "2026-03-26T07:03:39.463Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
     "playwright@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/playwright/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/playwright/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:05:11.931Z",
-        "lastUpdated": "2026-03-14T07:05:11.931Z",
+        "lastUpdated": "2026-03-26T07:03:39.447Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
     "commit-commands@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/commit-commands/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/commit-commands/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:05:11.940Z",
-        "lastUpdated": "2026-03-14T07:05:11.940Z",
+        "lastUpdated": "2026-03-26T07:03:39.473Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
@@ -84,20 +84,20 @@
     "figma@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/figma/1.2.0",
-        "version": "1.2.0",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/figma/2.1.7",
+        "version": "2.1.7",
         "installedAt": "2026-03-14T07:05:13.125Z",
-        "lastUpdated": "2026-03-14T07:05:13.125Z",
+        "lastUpdated": "2026-04-12T14:25:38.874Z",
         "gitCommitSha": "f046182e32c8160b1254ad12ec8318f9a9aa50b5"
       }
     ],
     "skill-creator@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/skill-creator/d5c15b861cd2",
-        "version": "d5c15b861cd2",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/claude-plugins-official/skill-creator/unknown",
+        "version": "unknown",
         "installedAt": "2026-03-14T07:05:13.142Z",
-        "lastUpdated": "2026-03-14T07:05:13.142Z",
+        "lastUpdated": "2026-03-26T07:03:39.486Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
       }
     ],
@@ -129,6 +129,16 @@
         "installedAt": "2026-03-14T07:13:40.944Z",
         "lastUpdated": "2026-03-14T07:13:40.944Z",
         "gitCommitSha": "d5c15b861cd23e3102215c26020368ad5134dc47"
+      }
+    ],
+    "pua@pua-skills": [
+      {
+        "scope": "user",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/pua-skills/pua/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2026-03-17T13:19:21.306Z",
+        "lastUpdated": "2026-03-17T13:19:21.306Z",
+        "gitCommitSha": "6b45e3fdb3b6d9a3b1ea9e6e447fb2a248a75ec7"
       }
     ]
   }

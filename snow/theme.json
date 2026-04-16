@@ -1,4 +1,5 @@
 {
   "theme": "nord",
-  "simpleMode": false
+  "simpleMode": false,
+  "diffOpacity": 1
 }

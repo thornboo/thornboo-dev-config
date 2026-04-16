@@ -1,29 +1,111 @@
-model_provider = "packycode"
-model = "gpt-5.4-xhigh"
-disable_response_storage = true
+# =============================================================
+# Codex 全局配置文件  ~/.codex/config.toml
+# 文档: https://developers.openai.com/codex/config-reference
+# =============================================================
+
+
+# ─────────────────────────────────────────
+# 模型配置
+# ─────────────────────────────────────────
+
+# 使用自定义 provider（见下方 model_providers 配置）
+model_provider = "octopus"
+model          = "gpt-5.4"
+
+# 推理强度: minimal | low | medium | high | xhigh
 model_reasoning_effort = "xhigh"
 
-[model_providers]
+# 不在服务端存储响应内容（隐私保护）
+disable_response_storage = true
 
-[model_providers.packycode]
-name = "packycode"
-wire_api = "responses"
-requires_openai_auth = true
-base_url = "http://127.0.0.1:15721/v1"
+# 操作审批由用户确认（而非自动放行）
+approvals_reviewer = "user"
 
-[mcp_servers.blender]
-type = "stdio"
-command = "uvx"
-args = ["blender-mcp"]
-startup_timeout_sec = 30
+
+# ─────────────────────────────────────────
+# 自定义模型 Provider
+# ─────────────────────────────────────────
+# octopus 是本地反代，把请求转发到实际的 API
+
+[model_providers.octopus]
+name     = "octopus"
+base_url = "http://127.0.0.1:8080/v1"
+
 
 [mcp_servers.context7]
-type = "stdio"
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
+
+[mcp_servers.blender]
+command = "uvx"
+args = ["blender-mcp"]
+startup_timeout_sec = 30.0
+
+[mcp_servers.pencil]
+command = "/Applications/Pencil.app/Contents/Resources/app.asar.unpacked/out/mcp-server-darwin-arm64"
+args = ["--app", "desktop"]
+
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp/"
+bearer_token_env_var = "GITHUB_PAT_TOKEN"
+
+[mcp_servers.serena]
+command = "serena"
+args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["@playwright/mcp@latest"]
+
+[mcp_servers.deepwiki]
+url = "https://mcp.deepwiki.com/mcp"
+
+[mcp_servers.exa]
+url = "https://mcp.exa.ai/mcp?exaApiKey=<REDACTED>"
+
+[mcp_servers.open-websearch]
+command = "npx"
+args = ["open-websearch@latest"]
+
+[mcp_servers.open-websearch.env]
+DEFAULT_SEARCH_ENGINE = "duckduckgo"
+MODE = "stdio"
+
+
+# ─────────────────────────────────────────
+# 信任项目
+# ─────────────────────────────────────────
+# 只有 trusted 的项目才会加载项目级 .codex/config.toml 和 AGENTS.md
+
+[projects."/Users/thornboo"]
+trust_level = "trusted"
 
 [projects."/Users/thornboo/codeDongShen/farm-web"]
 trust_level = "trusted"
 
-[projects."/Users/thornboo/codeGithub/OpenMOSS"]
+[projects."/Users/thornboo/codeDongShen/farm-mobile"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeGithub/boo-blog"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeGithub/OpenHive"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeSpace/lapis-cv-vscode-v2.0.0"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeTest/qimiaohuayuan"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeTest/StarScope"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeTest/StarScope/web"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeTest/RSense"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeGithub/thornboo-dev-config"]
 trust_level = "trusted"
