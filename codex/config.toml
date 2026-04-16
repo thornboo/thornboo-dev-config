@@ -41,12 +41,12 @@ base_url = "http://127.0.0.1:8080/v1"
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
-startup_timeout_sec = 15
+startup_timeout_sec = 60
 
 [mcp_servers.blender]
 command = "uvx"
 args = ["blender-mcp"]
-startup_timeout_sec = 30.0
+startup_timeout_sec = 90
 
 [mcp_servers.pencil]
 command = "/Applications/Pencil.app/Contents/Resources/app.asar.unpacked/out/mcp-server-darwin-arm64"
@@ -54,6 +54,7 @@ args = ["--app", "desktop"]
 
 [mcp_servers.github]
 url = "https://api.githubcopilot.com/mcp/"
+startup_timeout_sec = 60
 bearer_token_env_var = "GITHUB_PAT_TOKEN"
 
 [mcp_servers.serena]
@@ -67,14 +68,16 @@ startup_timeout_sec = 15
 
 [mcp_servers.deepwiki]
 url = "https://mcp.deepwiki.com/mcp"
+startup_timeout_sec = 60
 
 [mcp_servers.exa]
 url = "https://mcp.exa.ai/mcp?exaApiKey=<REDACTED>"
+startup_timeout_sec = 60
 
 [mcp_servers.open-websearch]
 command = "npx"
 args = ["open-websearch@latest"]
-startup_timeout_sec = 15
+startup_timeout_sec = 60
 
 [mcp_servers.open-websearch.env]
 DEFAULT_SEARCH_ENGINE = "duckduckgo"
