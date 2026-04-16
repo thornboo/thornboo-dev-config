@@ -1,5 +1,7 @@
 # thornboo-dev-config
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 我个人的 dotfiles 仓库，用来管理 AI 工具、终端环境和 agent 工作流相关的全局配置。
 
 这个仓库现在已经不只是“几个 AI 配置文件的备份”，而更像是 **My personal dotfiles**：
@@ -9,7 +11,6 @@
 
 这样可以更清楚地区分：哪些是“仓库本身的代码”，哪些是“我个人配置的备份内容”。
 
-For the English version, see `README.md`.
 
 ## 仓库结构
 

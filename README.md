@@ -1,10 +1,11 @@
 # thornboo-dev-config
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 My personal dotfiles repository for AI tooling, terminal setup, and agent workflows.
 
 This repo is not just a backup of a few AI app configs. It is the home for my personal machine-level dotfiles and global tooling preferences, with a small sync layer that keeps portable config in Git and keeps local secrets, logs, sessions, and machine-specific state out of the repo.
 
-中文说明见 `README.zh-CN.md`.
 
 ## Overview
 
