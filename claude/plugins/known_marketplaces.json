@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-04-16T14:57:32.315Z"
+    "lastUpdated": "2026-04-16T15:05:02.057Z"
   },
   "ui-ux-pro-max-skill": {
     "source": {
@@ -13,7 +13,7 @@
       "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
     },
     "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/ui-ux-pro-max-skill",
-    "lastUpdated": "2026-03-13T18:37:17.526Z"
+    "lastUpdated": "2026-04-16T15:05:29.311Z"
   },
   "everything-claude-code": {
     "source": {
@@ -21,7 +21,7 @@
       "repo": "affaan-m/everything-claude-code"
     },
     "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/everything-claude-code",
-    "lastUpdated": "2026-03-13T18:38:52.929Z"
+    "lastUpdated": "2026-04-16T15:05:13.526Z"
   },
   "pua-skills": {
     "source": {
@@ -29,6 +29,6 @@
       "repo": "tanweai/pua"
     },
     "installLocation": "/Users/thornboo/.claude/plugins/marketplaces/pua-skills",
-    "lastUpdated": "2026-03-17T13:19:19.719Z"
+    "lastUpdated": "2026-04-16T15:05:21.903Z"
   }
 }

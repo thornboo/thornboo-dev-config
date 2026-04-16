@@ -104,20 +104,20 @@
     "ui-ux-pro-max@ui-ux-pro-max-skill": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1",
-        "version": "2.0.1",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.5.0",
+        "version": "2.5.0",
         "installedAt": "2026-03-14T07:06:04.388Z",
-        "lastUpdated": "2026-03-14T07:06:04.388Z",
+        "lastUpdated": "2026-04-16T15:05:29.480Z",
         "gitCommitSha": "07f4ef3ac2568c25a3b0c8ef5165a86abc3e56e4"
       }
     ],
     "everything-claude-code@everything-claude-code": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/everything-claude-code/everything-claude-code/1.8.0",
-        "version": "1.8.0",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/everything-claude-code/everything-claude-code/1.10.0",
+        "version": "1.10.0",
         "installedAt": "2026-03-14T07:06:14.631Z",
-        "lastUpdated": "2026-03-14T07:06:14.631Z",
+        "lastUpdated": "2026-04-16T15:05:34.707Z",
         "gitCommitSha": "fdea3085a76c842edea49a72ea695ccc7ff537ed"
       }
     ],
@@ -134,10 +134,10 @@
     "pua@pua-skills": [
       {
         "scope": "user",
-        "installPath": "/Users/thornboo/.claude/plugins/cache/pua-skills/pua/1.2.0",
-        "version": "1.2.0",
+        "installPath": "/Users/thornboo/.claude/plugins/cache/pua-skills/pua/3.1.0",
+        "version": "3.1.0",
         "installedAt": "2026-03-17T13:19:21.306Z",
-        "lastUpdated": "2026-03-17T13:19:21.306Z",
+        "lastUpdated": "2026-04-16T15:05:29.395Z",
         "gitCommitSha": "6b45e3fdb3b6d9a3b1ea9e6e447fb2a248a75ec7"
       }
     ]
