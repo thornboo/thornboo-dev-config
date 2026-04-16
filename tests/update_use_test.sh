@@ -54,6 +54,60 @@ copy_repo() {
     "$REPO_ROOT/" "$destination/"
 }
 
+
+assert_history_jsonl_contains() {
+  local repo_dir="$1"
+  local expected_action="$2"
+
+  python3 - "$repo_dir/sync-records/history.jsonl" "$expected_action" <<'PY_JSON'
+import json
+import sys
+from pathlib import Path
+
+history_path = Path(sys.argv[1])
+expected_action = sys.argv[2]
+
+if not history_path.exists():
+    raise SystemExit(f"Missing history jsonl: {history_path}")
+
+records = [json.loads(line) for line in history_path.read_text().splitlines() if line.strip()]
+if not records:
+    raise SystemExit("No JSON records found")
+
+latest = records[-1]
+required_keys = {
+    "timestamp",
+    "action",
+    "targets",
+    "dry_run",
+    "ok",
+    "skipped",
+    "failed",
+    "redacted",
+    "copied",
+    "merged",
+    "conflicts",
+}
+missing = required_keys - latest.keys()
+if missing:
+    raise SystemExit(f"Missing keys: {sorted(missing)}")
+
+if latest["action"] != expected_action:
+    raise SystemExit(f"Expected action {expected_action}, got {latest['action']}")
+
+if not isinstance(latest["targets"], list):
+    raise SystemExit("targets must be a list")
+
+for key in ["dry_run"]:
+    if not isinstance(latest[key], bool):
+        raise SystemExit(f"{key} must be boolean")
+
+for key in ["ok", "skipped", "failed", "redacted", "copied", "merged", "conflicts"]:
+    if not isinstance(latest[key], int):
+        raise SystemExit(f"{key} must be integer")
+PY_JSON
+}
+
 assert_summary_contains() {
   local repo_dir="$1"
   local expected="$2"
@@ -104,6 +158,7 @@ EOF_DATA
   assert_contains "$repo_dir/sync-records/latest.log" "✅ [OK] update claude"
   assert_summary_contains "$repo_dir" "action=update"
   assert_summary_contains "$repo_dir" "targets=claude"
+  assert_history_jsonl_contains "$repo_dir" "update"
 }
 
 run_update_all_case() {
@@ -223,6 +278,7 @@ EOF_DATA
   assert_contains "$log_path" "🔀 [MERGE] codex config.toml"
   assert_summary_contains "$repo_dir" "action=use"
   assert_summary_contains "$repo_dir" "conflicts=1"
+  assert_history_jsonl_contains "$repo_dir" "use"
   assert_contains "$repo_dir/sync-records/conflicts.log" "sensitive file skipped"
 }
 

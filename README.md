@@ -93,7 +93,8 @@ thornboo-dev-config/
 
 - `sync-records/latest.log` — 最近一次完整运行日志
 - `sync-records/latest-summary.txt` — 最近一次摘要统计
-- `sync-records/history.log` — 每次运行的历史摘要
+- `sync-records/history.log` — 每次运行的文本历史摘要
+- `sync-records/history.jsonl` — 每次运行的 JSONL 历史摘要，方便脚本和 `jq` 解析
 - `sync-records/conflicts.log` — 冲突与跳过原因记录
 
 当前冲突处理策略：
@@ -150,5 +151,4 @@ thornboo-dev-config/
 如果你后面想继续增强，可以考虑：
 
 - 给 `use` 增加 `--backup`，应用前先备份本机旧文件
-- 给 `sync-records/history.log` 增加 JSON 格式输出，方便机器解析
 - 在可联网环境下补全官方文档链接与脚本路径来源说明

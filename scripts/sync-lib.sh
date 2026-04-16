@@ -26,6 +26,7 @@ RECORD_DIR=""
 LATEST_LOG_PATH=""
 SUMMARY_PATH=""
 HISTORY_PATH=""
+HISTORY_JSONL_PATH=""
 CONFLICTS_PATH=""
 RECORDING_ACTIVE=false
 
@@ -582,11 +583,12 @@ setup_run_recording() {
   LATEST_LOG_PATH="$RECORD_DIR/latest.log"
   SUMMARY_PATH="$RECORD_DIR/latest-summary.txt"
   HISTORY_PATH="$RECORD_DIR/history.log"
+  HISTORY_JSONL_PATH="$RECORD_DIR/history.jsonl"
   CONFLICTS_PATH="$RECORD_DIR/conflicts.log"
 
   mkdir -p "$RECORD_DIR"
   : > "$LATEST_LOG_PATH"
-  touch "$HISTORY_PATH" "$CONFLICTS_PATH"
+  touch "$HISTORY_PATH" "$HISTORY_JSONL_PATH" "$CONFLICTS_PATH"
 
   RECORDING_ACTIVE=true
 
@@ -640,9 +642,39 @@ print_run_summary() {
 
   log_record "latest log: $LATEST_LOG_PATH"
   log_record "summary: $SUMMARY_PATH"
+  log_record "history jsonl: $HISTORY_JSONL_PATH"
+}
+
+json_escape() {
+  local value="$1"
+
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  value="${value//$'\n'/\\n}"
+  value="${value//$'\r'/\\r}"
+  value="${value//$'\t'/\\t}"
+
+  printf '%s' "$value"
+}
+
+json_targets_array() {
+  local index=0
+  local target=""
+
+  printf '['
+  for target in "${TARGETS[@]}"; do
+    if [[ "$index" -gt 0 ]]; then
+      printf ','
+    fi
+    printf '"%s"' "$(json_escape "$target")"
+    index=$((index + 1))
+  done
+  printf ']'
 }
 
 write_run_summary() {
+  local json_targets="$(json_targets_array)"
+
   cat > "$SUMMARY_PATH" <<EOF_SUMMARY
 timestamp=$RUN_TIMESTAMP
 action=$ACTION
@@ -659,6 +691,19 @@ EOF_SUMMARY
 
   printf '%s action=%s targets=%s dry_run=%s ok=%s skipped=%s failed=%s redacted=%s copied=%s merged=%s conflicts=%s\n' \
     "$RUN_TIMESTAMP" "$ACTION" "$RUN_TARGETS" "$DRY_RUN" "$SUMMARY_OK" "$SUMMARY_SKIP" "$SUMMARY_FAIL" "$SUMMARY_MASKED" "$SUMMARY_COPIED" "$SUMMARY_MERGED" "$SUMMARY_CONFLICTS" >> "$HISTORY_PATH"
+
+  printf '{"timestamp":"%s","action":"%s","targets":%s,"dry_run":%s,"ok":%s,"skipped":%s,"failed":%s,"redacted":%s,"copied":%s,"merged":%s,"conflicts":%s}\n' \
+    "$(json_escape "$RUN_TIMESTAMP")" \
+    "$(json_escape "$ACTION")" \
+    "$json_targets" \
+    "$DRY_RUN" \
+    "$SUMMARY_OK" \
+    "$SUMMARY_SKIP" \
+    "$SUMMARY_FAIL" \
+    "$SUMMARY_MASKED" \
+    "$SUMMARY_COPIED" \
+    "$SUMMARY_MERGED" \
+    "$SUMMARY_CONFLICTS" >> "$HISTORY_JSONL_PATH"
 }
 
 run_update_tree() {
