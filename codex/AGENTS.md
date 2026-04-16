@@ -434,3 +434,14 @@ Mode lifecycle requirements:
 ## Setup
 
 Execute `omx setup` to install all components. Execute `omx doctor` to verify installation.
+
+---
+
+## Personal Interaction Preferences
+
+- Default collaboration style: transparent.
+- You may automatically use ordinary non-destructive tools and workflows when they materially improve correctness or speed.
+- Before using tools, MCP resources, plans, or workflow skills, give a brief one-sentence preamble describing the immediate next action and why it helps.
+- Keep those preambles short, concrete, and proportional to the action; do not add ceremony for every trivial read.
+- Do not spawn child agents unless the user explicitly asks for delegation, parallel work, or subagents.
+- Continue to ask before destructive, irreversible, or materially branching actions.
