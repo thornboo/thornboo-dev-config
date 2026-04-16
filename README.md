@@ -76,6 +76,18 @@ thornboo-dev-config/
 - 敏感文件默认跳过，比如 `auth.json`、`.env`
 - 对已脱敏的配置文件，会尽量保留你本机原有的 secret；无法安全恢复时会跳过并记录冲突
 
+## 安全模型
+
+这个仓库默认按“可公开审阅但不含真实 secret”的方式备份配置：
+
+- **会脱敏**：配置类文件中的常见 secret 字段，如 `api_key`、`token`、`secret`、`password`，以及 URL query 中的 key/token。
+- **会跳过**：回灌时默认不覆盖 `auth.json`、`.env`、`credentials.json`、`tokens.json` 等敏感文件。
+- **会合并**：仓库文件包含 `<REDACTED>` 时，`use` 会尝试从本机旧文件补回真实 secret；补不回来就跳过并记录冲突。
+- **会排除**：会话、历史、缓存、sqlite、临时目录、Claude inbox、Kitty `*.bak` 等运行时或备份文件不会进入仓库。
+- **不会加密**：脚本只做脱敏和跳过，不负责加密保存 secret；真实 secret 仍应放在本机环境变量或工具自己的认证文件里。
+
+`sync-records/` 会留在本机仓库目录中便于审计，但默认被 `.gitignore` 忽略，不随 Git 提交。
+
 ## 冲突与备份记录
 
 `update` 和 `use` 默认使用 emoji 状态标记，让日志更容易扫读：
@@ -132,11 +144,11 @@ thornboo-dev-config/
 
 | 目标 | 备份内容 | 排除内容 |
 |------|---------|---------|
-| Claude Code | 全局配置、rules、skills、主题、插件元数据 | sessions、history、cache、tasks、telemetry、运行时目录 |
+| Claude Code | 全局配置、rules、skills、主题、插件元数据 | sessions、history、cache、tasks、teams inbox、telemetry、运行时目录 |
 | Codex | 全局配置、用户技能、版本信息 | sessions、logs、sqlite、`.tmp`、`tmp`、运行时状态 |
 | Gemini | 全局配置、trusted folders、`.env` | history、tmp、state、installation id |
 | Zsh | `.zshrc` | 无额外扫描 |
-| Kitty | `kitty.conf` 及配置目录内文件 | 仅排除 `.DS_Store` |
+| Kitty | `kitty.conf` 及配置目录内文件 | `.DS_Store`、`*.bak`、`*.backup` |
 | Snow | 全局配置、profiles | history、log、sessions、snapshots、notebook 等运行时目录 |
 | AGENTS | `~/AGENTS.md` | 无 |
 

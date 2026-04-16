@@ -2,6 +2,8 @@
 .serena/
 
 # Claude Code
+claude/settings.local.json
+claude/teams/*/inboxes/
 claude/backups/
 claude/cache/
 claude/ccline/ccline
@@ -61,4 +63,6 @@ snow/mcp-config.json.save
 sync-records/
 
 # Zsh and Kitty local runtime extras
+kitty/*.backup
+kitty/*.bak
 kitty/.DS_Store

@@ -123,7 +123,7 @@ run_update_claude_case() {
 
   copy_repo "$repo_dir"
 
-  mkdir -p "$home_dir/.claude/ccline" "$home_dir/.claude/sessions" "$home_dir/.claude/file-history" "$home_dir/.claude/rules/golang"
+  mkdir -p "$home_dir/.claude/ccline" "$home_dir/.claude/sessions" "$home_dir/.claude/file-history" "$home_dir/.claude/rules/golang" "$home_dir/.claude/teams/default/inboxes"
   cat <<'EOF_DATA' > "$home_dir/.claude/settings.json"
 {"apiKey":"sk-live-123","theme":"dark","nested":{"access_token":"token-456"}}
 EOF_DATA
@@ -137,6 +137,8 @@ EOF_DATA
   echo "session-data" > "$home_dir/.claude/sessions/keep.txt"
   echo "recent-file" > "$home_dir/.claude/file-history/recent.txt"
   echo "history-entry" > "$home_dir/.claude/history.jsonl"
+  echo "{\"permissions\":{}}" > "$home_dir/.claude/settings.local.json"
+  echo "runtime-message" > "$home_dir/.claude/teams/default/inboxes/message.json"
 
   (
     cd "$repo_dir"
@@ -152,6 +154,8 @@ EOF_DATA
   assert_not_exists "$repo_dir/claude/sessions"
   assert_not_exists "$repo_dir/claude/file-history"
   assert_not_exists "$repo_dir/claude/history.jsonl"
+  assert_not_exists "$repo_dir/claude/settings.local.json"
+  assert_not_exists "$repo_dir/claude/teams/default/inboxes"
   assert_contains "$repo_dir/claude/rules/golang/security.md" "api_key examples"
   assert_not_contains "$repo_dir/claude/rules/golang/security.md" "<REDACTED>"
   assert_contains "$log_path" "✅ [OK] update claude"
@@ -190,6 +194,7 @@ EOF_DATA
 map ctrl+a send_text all api_key=kitty-secret
 font_size 16
 EOF_DATA
+  echo "backup" > "$home_dir/Library/Preferences/kitty/kitty.conf.bak"
   cat <<'EOF_DATA' > "$home_dir/AGENTS.md"
 # Home AGENTS
 EOF_DATA
@@ -205,6 +210,7 @@ EOF_DATA
   assert_file_exists "$repo_dir/snow/settings.json"
   assert_file_exists "$repo_dir/zsh/.zshrc"
   assert_file_exists "$repo_dir/kitty/kitty.conf"
+  assert_not_exists "$repo_dir/kitty/kitty.conf.bak"
   assert_contains "$repo_dir/AGENTS.md" "# Home AGENTS"
   assert_contains "$repo_dir/zsh/.zshrc" "<REDACTED>"
   assert_contains "$repo_dir/kitty/kitty.conf" "kitty-secret"

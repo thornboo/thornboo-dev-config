@@ -7,6 +7,10 @@ readonly REPO_DIR="$(cd "$SYNC_LIB_DIR/.." && pwd)"
 readonly REDACTED_PLACEHOLDER="<REDACTED>"
 readonly RECORD_DIR_NAME="sync-records"
 
+# -----------------------------------------------------------------------------
+# Global State
+# -----------------------------------------------------------------------------
+
 ACTION=""
 DRY_RUN=false
 USE_EMOJI=true
@@ -19,6 +23,7 @@ SUMMARY_COPIED=0
 SUMMARY_MERGED=0
 SUMMARY_CONFLICTS=0
 LAST_SANITIZED_COUNT=0
+EXCLUDE_PATTERNS=()
 RSYNC_EXCLUDES=()
 RUN_TIMESTAMP=""
 RUN_TARGETS=""
@@ -29,6 +34,10 @@ HISTORY_PATH=""
 HISTORY_JSONL_PATH=""
 CONFLICTS_PATH=""
 RECORDING_ACTIVE=false
+
+# -----------------------------------------------------------------------------
+# Logging
+# -----------------------------------------------------------------------------
 
 emoji_for_status() {
   local status="$1"
@@ -123,6 +132,10 @@ log_done() {
 log_record() {
   log_line stdout RECORD "$1"
 }
+
+# -----------------------------------------------------------------------------
+# CLI Parsing
+# -----------------------------------------------------------------------------
 
 print_update_usage() {
   cat <<'EOF_USAGE'
@@ -258,6 +271,10 @@ parse_targets() {
   RUN_TARGETS="$(IFS=,; printf '%s' "${TARGETS[*]}")"
 }
 
+# -----------------------------------------------------------------------------
+# Target Paths
+# -----------------------------------------------------------------------------
+
 resolve_kitty_config_dir() {
   if [[ -n "${KITTY_CONFIG_DIRECTORY:-}" ]]; then
     printf '%s' "$KITTY_CONFIG_DIRECTORY"
@@ -328,133 +345,133 @@ tool_requires_redaction() {
   esac
 }
 
-build_rsync_excludes() {
+# -----------------------------------------------------------------------------
+# Exclude Rules
+# -----------------------------------------------------------------------------
+
+build_exclude_patterns() {
   local tool="$1"
 
-  RSYNC_EXCLUDES=()
+  EXCLUDE_PATTERNS=()
 
   case "$tool" in
     claude)
-      RSYNC_EXCLUDES=(
-        --exclude=backups/
-        --exclude=cache/
-        --exclude=file-history/
-        --exclude=history.jsonl
-        --exclude=ccline/ccline
-        --exclude=homunculus/projects/
-        --exclude=homunculus/projects.json
-        --exclude=metrics/
-        --exclude=paste-cache/
-        --exclude=plans/
-        --exclude=plugins/cache/
-        --exclude=plugins/install-counts-cache.json
-        --exclude=plugins/marketplaces/
-        --exclude=projects/
-        --exclude=session-env/
-        --exclude=sessions/
-        --exclude=shell-snapshots/
-        --exclude=tasks/
-        --exclude=telemetry/
-        --exclude=.DS_Store
+      EXCLUDE_PATTERNS=(
+        backups/
+        cache/
+        file-history/
+        history.jsonl
+        settings.local.json
+        ccline/ccline
+        homunculus/projects/
+        homunculus/projects.json
+        metrics/
+        paste-cache/
+        plans/
+        plugins/cache/
+        plugins/install-counts-cache.json
+        plugins/marketplaces/
+        projects/
+        session-env/
+        sessions/
+        shell-snapshots/
+        tasks/
+        teams/*/inboxes/
+        telemetry/
+        .DS_Store
       )
       ;;
     codex)
-      RSYNC_EXCLUDES=(
-        --exclude=.tmp/
-        --exclude=installation_id
-        --exclude=log/
-        --exclude=logs_*.sqlite
-        --exclude=*.sqlite-shm
-        --exclude=*.sqlite-wal
-        --exclude=memories/
-        --exclude=sessions/
-        --exclude=shell_snapshots/
-        --exclude=skills/.system/
-        --exclude=state_*.sqlite
-        --exclude=tmp/
-        --exclude=history.jsonl
-        --exclude=.DS_Store
+      EXCLUDE_PATTERNS=(
+        .tmp/
+        installation_id
+        log/
+        logs_*.sqlite
+        *.sqlite-shm
+        *.sqlite-wal
+        memories/
+        sessions/
+        shell_snapshots/
+        skills/.system/
+        state_*.sqlite
+        tmp/
+        history.jsonl
+        .DS_Store
       )
       ;;
     gemini)
-      RSYNC_EXCLUDES=(
-        --exclude=history/
-        --exclude=tmp/
-        --exclude=installation_id
-        --exclude=projects.json
-        --exclude=state.json
-        --exclude=.DS_Store
+      EXCLUDE_PATTERNS=(
+        history/
+        tmp/
+        installation_id
+        projects.json
+        state.json
+        .DS_Store
       )
       ;;
     kitty)
-      RSYNC_EXCLUDES=(
-        --exclude=.DS_Store
+      EXCLUDE_PATTERNS=(
+        *.bak
+        *.backup
+        .DS_Store
       )
       ;;
     snow)
-      RSYNC_EXCLUDES=(
-        --exclude=history/
-        --exclude=log/
-        --exclude=notebook/
-        --exclude=sessions/
-        --exclude=snapshots/
-        --exclude=todos/
-        --exclude=usage/
-        --exclude=active-profile.json
-        --exclude=codebase.json
-        --exclude=command-usage.json
-        --exclude=history.json
-        --exclude=mcp-config.json.save
-        --exclude=.DS_Store
+      EXCLUDE_PATTERNS=(
+        history/
+        log/
+        notebook/
+        sessions/
+        snapshots/
+        todos/
+        usage/
+        active-profile.json
+        codebase.json
+        command-usage.json
+        history.json
+        mcp-config.json.save
+        .DS_Store
       )
       ;;
   esac
+}
+
+build_rsync_excludes() {
+  local tool="$1"
+  local pattern=""
+
+  build_exclude_patterns "$tool"
+  RSYNC_EXCLUDES=()
+
+  for pattern in "${EXCLUDE_PATTERNS[@]}"; do
+    RSYNC_EXCLUDES+=("--exclude=$pattern")
+  done
 }
 
 is_excluded_path() {
   local tool="$1"
   local relative_path="$2"
+  local pattern=""
+  local directory_pattern=""
 
-  case "$tool" in
-    claude)
-      case "$relative_path" in
-        backups|backups/*|cache|cache/*|file-history|file-history/*|history.jsonl|ccline/ccline|homunculus/projects|homunculus/projects/*|homunculus/projects.json|metrics|metrics/*|paste-cache|paste-cache/*|plans|plans/*|plugins/cache|plugins/cache/*|plugins/install-counts-cache.json|plugins/marketplaces|plugins/marketplaces/*|projects|projects/*|session-env|session-env/*|sessions|sessions/*|shell-snapshots|shell-snapshots/*|tasks|tasks/*|telemetry|telemetry/*|.DS_Store)
-          return 0
-          ;;
-      esac
-      ;;
-    codex)
-      case "$relative_path" in
-        .tmp|.tmp/*|installation_id|log|log/*|logs_*.sqlite|*.sqlite-shm|*.sqlite-wal|memories|memories/*|sessions|sessions/*|shell_snapshots|shell_snapshots/*|skills/.system|skills/.system/*|state_*.sqlite|tmp|tmp/*|history.jsonl|.DS_Store)
-          return 0
-          ;;
-      esac
-      ;;
-    gemini)
-      case "$relative_path" in
-        history|history/*|tmp|tmp/*|installation_id|projects.json|state.json|.DS_Store)
-          return 0
-          ;;
-      esac
-      ;;
-    kitty)
-      case "$relative_path" in
-        .DS_Store)
-          return 0
-          ;;
-      esac
-      ;;
-    snow)
-      case "$relative_path" in
-        history|history/*|log|log/*|notebook|notebook/*|sessions|sessions/*|snapshots|snapshots/*|todos|todos/*|usage|usage/*|active-profile.json|codebase.json|command-usage.json|history.json|mcp-config.json.save|.DS_Store)
-          return 0
-          ;;
-      esac
-      ;;
-  esac
+  build_exclude_patterns "$tool"
+
+  for pattern in "${EXCLUDE_PATTERNS[@]}"; do
+    directory_pattern="${pattern%/}"
+
+    case "$relative_path" in
+      $pattern|$directory_pattern|$directory_pattern/*)
+        return 0
+        ;;
+    esac
+  done
 
   return 1
 }
+
+# -----------------------------------------------------------------------------
+# Redaction and Sensitive File Handling
+# -----------------------------------------------------------------------------
 
 is_sensitive_restore_path() {
   local relative_path="$1"
@@ -566,6 +583,10 @@ merge_redacted_file() {
 
   perl "$REPO_DIR/scripts/merge-redacted.pl" "$source_path" "$destination_path" "$output_path"
 }
+
+# -----------------------------------------------------------------------------
+# Run Records
+# -----------------------------------------------------------------------------
 
 record_conflict() {
   local tool="$1"
@@ -706,6 +727,10 @@ EOF_SUMMARY
     "$SUMMARY_CONFLICTS" >> "$HISTORY_JSONL_PATH"
 }
 
+# -----------------------------------------------------------------------------
+# Update Flow
+# -----------------------------------------------------------------------------
+
 run_update_tree() {
   local tool="$1"
   local source_path="$(tool_home_path "$tool")"
@@ -784,6 +809,10 @@ run_update_target() {
 
   run_update_tree "$tool"
 }
+
+# -----------------------------------------------------------------------------
+# Use Flow
+# -----------------------------------------------------------------------------
 
 run_use_tree() {
   local tool="$1"
@@ -924,6 +953,10 @@ run_use_target() {
 
   run_use_tree "$tool"
 }
+
+# -----------------------------------------------------------------------------
+# Entrypoints
+# -----------------------------------------------------------------------------
 
 run_update_main() {
   parse_targets update "$@"
