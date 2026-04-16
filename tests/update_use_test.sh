@@ -123,7 +123,15 @@ run_update_claude_case() {
 
   copy_repo "$repo_dir"
 
-  mkdir -p "$home_dir/.claude/ccline" "$home_dir/.claude/sessions" "$home_dir/.claude/file-history" "$home_dir/.claude/rules/golang" "$home_dir/.claude/teams/default/inboxes"
+  mkdir -p \
+    "$home_dir/.claude/.superpowers/brainstorm/123" \
+    "$home_dir/.claude/ccline" \
+    "$home_dir/.claude/ecc" \
+    "$home_dir/.claude/file-history" \
+    "$home_dir/.claude/rules/golang" \
+    "$home_dir/.claude/session-data" \
+    "$home_dir/.claude/sessions" \
+    "$home_dir/.claude/teams/default/inboxes"
   cat <<'EOF_DATA' > "$home_dir/.claude/settings.json"
 {"apiKey":"sk-live-123","theme":"dark","nested":{"access_token":"token-456"}}
 EOF_DATA
@@ -139,25 +147,35 @@ EOF_DATA
   echo "history-entry" > "$home_dir/.claude/history.jsonl"
   echo "{\"permissions\":{}}" > "$home_dir/.claude/settings.local.json"
   echo "runtime-message" > "$home_dir/.claude/teams/default/inboxes/message.json"
+  echo "brainstorm log" > "$home_dir/.claude/.superpowers/brainstorm/123/.server.log"
+  echo "command history with /Users/private-project" > "$home_dir/.claude/bash-commands.log"
+  echo "cost history with /Users/private-project" > "$home_dir/.claude/cost-tracker.log"
+  echo '{"root":"/Users/private/.claude"}' > "$home_dir/.claude/ecc/install-state.json"
+  echo "session summary with private prompt" > "$home_dir/.claude/session-data/session.tmp"
 
   (
     cd "$repo_dir"
     HOME="$home_dir" bash ./update claude > "$log_path"
   )
 
-  assert_file_exists "$repo_dir/claude/settings.json"
-  assert_file_exists "$repo_dir/claude/ccline/config.toml"
-  assert_contains "$repo_dir/claude/settings.json" "<REDACTED>"
-  assert_not_contains "$repo_dir/claude/settings.json" "sk-live-123"
-  assert_contains "$repo_dir/claude/ccline/config.toml" "<REDACTED>"
-  assert_not_contains "$repo_dir/claude/ccline/config.toml" "top-secret"
-  assert_not_exists "$repo_dir/claude/sessions"
-  assert_not_exists "$repo_dir/claude/file-history"
-  assert_not_exists "$repo_dir/claude/history.jsonl"
-  assert_not_exists "$repo_dir/claude/settings.local.json"
-  assert_not_exists "$repo_dir/claude/teams/default/inboxes"
-  assert_contains "$repo_dir/claude/rules/golang/security.md" "api_key examples"
-  assert_not_contains "$repo_dir/claude/rules/golang/security.md" "<REDACTED>"
+  assert_file_exists "$repo_dir/backup/claude/settings.json"
+  assert_file_exists "$repo_dir/backup/claude/ccline/config.toml"
+  assert_contains "$repo_dir/backup/claude/settings.json" "YOUR-API-KEY"
+  assert_not_contains "$repo_dir/backup/claude/settings.json" "sk-live-123"
+  assert_contains "$repo_dir/backup/claude/ccline/config.toml" "YOUR-API-KEY"
+  assert_not_contains "$repo_dir/backup/claude/ccline/config.toml" "top-secret"
+  assert_not_exists "$repo_dir/backup/claude/sessions"
+  assert_not_exists "$repo_dir/backup/claude/file-history"
+  assert_not_exists "$repo_dir/backup/claude/history.jsonl"
+  assert_not_exists "$repo_dir/backup/claude/settings.local.json"
+  assert_not_exists "$repo_dir/backup/claude/teams/default/inboxes"
+  assert_not_exists "$repo_dir/backup/claude/.superpowers"
+  assert_not_exists "$repo_dir/backup/claude/bash-commands.log"
+  assert_not_exists "$repo_dir/backup/claude/cost-tracker.log"
+  assert_not_exists "$repo_dir/backup/claude/ecc/install-state.json"
+  assert_not_exists "$repo_dir/backup/claude/session-data"
+  assert_contains "$repo_dir/backup/claude/rules/golang/security.md" "api_key examples"
+  assert_not_contains "$repo_dir/backup/claude/rules/golang/security.md" "YOUR-API-KEY"
   assert_contains "$log_path" "✅ [OK] update claude"
   assert_contains "$repo_dir/sync-records/latest.log" "✅ [OK] update claude"
   assert_summary_contains "$repo_dir" "action=update"
@@ -204,16 +222,16 @@ EOF_DATA
     HOME="$home_dir" bash ./update > "$log_path"
   )
 
-  assert_file_exists "$repo_dir/claude/settings.json"
-  assert_file_exists "$repo_dir/codex/config.toml"
-  assert_file_exists "$repo_dir/gemini/settings.json"
-  assert_file_exists "$repo_dir/snow/settings.json"
-  assert_file_exists "$repo_dir/zsh/.zshrc"
-  assert_file_exists "$repo_dir/kitty/kitty.conf"
-  assert_not_exists "$repo_dir/kitty/kitty.conf.bak"
-  assert_contains "$repo_dir/AGENTS.md" "# Home AGENTS"
-  assert_contains "$repo_dir/zsh/.zshrc" "<REDACTED>"
-  assert_contains "$repo_dir/kitty/kitty.conf" "kitty-secret"
+  assert_file_exists "$repo_dir/backup/claude/settings.json"
+  assert_file_exists "$repo_dir/backup/codex/config.toml"
+  assert_file_exists "$repo_dir/backup/gemini/settings.json"
+  assert_file_exists "$repo_dir/backup/snow/settings.json"
+  assert_file_exists "$repo_dir/backup/zsh/.zshrc"
+  assert_file_exists "$repo_dir/backup/kitty/kitty.conf"
+  assert_not_exists "$repo_dir/backup/kitty/kitty.conf.bak"
+  assert_contains "$repo_dir/backup/home/AGENTS.md" "# Home AGENTS"
+  assert_contains "$repo_dir/backup/zsh/.zshrc" "YOUR-API-KEY"
+  assert_contains "$repo_dir/backup/kitty/kitty.conf" "kitty-secret"
   assert_contains "$log_path" "🎉 [DONE] update finished"
   assert_contains "$log_path" "summary for update"
   assert_summary_contains "$repo_dir" "targets=claude,codex,gemini,zshrc,kitty,snow,agents"
@@ -239,11 +257,43 @@ EOF_DATA
     HOME="$home_dir" bash ./update codex > "$log_path"
   )
 
-  assert_file_exists "$repo_dir/codex/config.toml"
-  assert_contains "$repo_dir/codex/config.toml" "<REDACTED>"
-  assert_not_exists "$repo_dir/codex/.tmp"
-  assert_not_exists "$repo_dir/codex/installation_id"
+  assert_file_exists "$repo_dir/backup/codex/config.toml"
+  assert_contains "$repo_dir/backup/codex/config.toml" "YOUR-API-KEY"
+  assert_not_exists "$repo_dir/backup/codex/.tmp"
+  assert_not_exists "$repo_dir/backup/codex/installation_id"
   assert_not_contains "$log_path" ".tmp/plugins/readme.md"
+}
+
+run_update_gemini_privacy_case() {
+  local case_dir="$TMP_ROOT/update-gemini-privacy"
+  local repo_dir="$case_dir/repo"
+  local home_dir="$case_dir/home"
+  local log_path="$case_dir/output.log"
+
+  copy_repo "$repo_dir"
+
+  mkdir -p "$home_dir/.gemini/history" "$home_dir/.gemini"
+  cat <<'EOF_DATA' > "$home_dir/.gemini/settings.json"
+{"theme":"dark"}
+EOF_DATA
+  cat <<'EOF_DATA' > "$home_dir/.gemini/trustedFolders.json"
+{"/Users/private/work":"TRUST_FOLDER"}
+EOF_DATA
+  cat <<'EOF_DATA' > "$home_dir/.gemini/.env"
+GEMINI_API_KEY=real-gemini-secret
+EOF_DATA
+  echo "chat history" > "$home_dir/.gemini/history/log.jsonl"
+
+  (
+    cd "$repo_dir"
+    HOME="$home_dir" bash ./update gemini > "$log_path"
+  )
+
+  assert_file_exists "$repo_dir/backup/gemini/settings.json"
+  assert_not_exists "$repo_dir/backup/gemini/trustedFolders.json"
+  assert_not_exists "$repo_dir/backup/gemini/.env"
+  assert_not_exists "$repo_dir/backup/gemini/history"
+  assert_not_contains "$log_path" "trustedFolders.json"
 }
 
 run_use_codex_case() {
@@ -254,13 +304,13 @@ run_use_codex_case() {
 
   copy_repo "$repo_dir"
 
-  mkdir -p "$repo_dir/codex" "$home_dir/.codex"
-  cat <<'EOF_DATA' > "$repo_dir/codex/config.toml"
+  mkdir -p "$repo_dir/backup/codex" "$home_dir/.codex"
+  cat <<'EOF_DATA' > "$repo_dir/backup/codex/config.toml"
 model = "gpt-5.5"
-url = "https://mcp.exa.ai/mcp?exaApiKey=<REDACTED>"
+url = "https://mcp.exa.ai/mcp?exaApiKey=YOUR-API-KEY"
 EOF_DATA
-  cat <<'EOF_DATA' > "$repo_dir/codex/auth.json"
-{"api_key":"<REDACTED>"}
+  cat <<'EOF_DATA' > "$repo_dir/backup/codex/auth.json"
+{"api_key":"YOUR-API-KEY"}
 EOF_DATA
   cat <<'EOF_DATA' > "$home_dir/.codex/config.toml"
 model = "old-model"
@@ -277,9 +327,9 @@ EOF_DATA
 
   assert_contains "$home_dir/.codex/config.toml" "gpt-5.5"
   assert_contains "$home_dir/.codex/config.toml" "exaApiKey=live-local-key"
-  assert_not_contains "$home_dir/.codex/config.toml" "<REDACTED>"
+  assert_not_contains "$home_dir/.codex/config.toml" "YOUR-API-KEY"
   assert_contains "$home_dir/.codex/auth.json" "real-secret"
-  assert_not_contains "$home_dir/.codex/auth.json" "<REDACTED>"
+  assert_not_contains "$home_dir/.codex/auth.json" "YOUR-API-KEY"
   assert_contains "$log_path" "⏭️  [SKIP] codex auth.json"
   assert_contains "$log_path" "🔀 [MERGE] codex config.toml"
   assert_summary_contains "$repo_dir" "action=use"
@@ -296,9 +346,9 @@ run_use_zshrc_case() {
 
   copy_repo "$repo_dir"
 
-  mkdir -p "$repo_dir/zsh" "$home_dir"
-  cat <<'EOF_DATA' > "$repo_dir/zsh/.zshrc"
-export OPENAI_API_KEY="<REDACTED>"
+  mkdir -p "$repo_dir/backup/zsh" "$home_dir"
+  cat <<'EOF_DATA' > "$repo_dir/backup/zsh/.zshrc"
+export OPENAI_API_KEY="YOUR-API-KEY"
 alias gs='git status'
 EOF_DATA
   cat <<'EOF_DATA' > "$home_dir/.zshrc"
@@ -313,7 +363,7 @@ EOF_DATA
 
   assert_contains "$home_dir/.zshrc" "OPENAI_API_KEY=\"live-shell-secret\""
   assert_contains "$home_dir/.zshrc" "alias gs='git status'"
-  assert_not_contains "$home_dir/.zshrc" "<REDACTED>"
+  assert_not_contains "$home_dir/.zshrc" "YOUR-API-KEY"
   assert_contains "$log_path" "🔀 [MERGE] zshrc .zshrc"
 }
 
@@ -345,6 +395,7 @@ EOF_DATA
 run_update_claude_case
 run_update_all_case
 run_update_codex_excludes_case
+run_update_gemini_privacy_case
 run_no_emoji_case
 run_use_codex_case
 run_use_zshrc_case

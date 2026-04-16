@@ -113,7 +113,7 @@ case ":$PATH:" in
 esac
 
 # Github Server MCP API Keys
-export GITHUB_PAT_TOKEN=<REDACTED>
+export GITHUB_PAT_TOKEN=YOUR-API-KEY
 
 # =================================================================
 # 6. Claude Code 快捷启动函数配置区
@@ -123,7 +123,7 @@ export GITHUB_PAT_TOKEN=<REDACTED>
 function claude-official() {
     local -a env_vars=(
         "ANTHROPIC_BASE_URL=http://127.0.0.1:8080"
-        "ANTHROPIC_AUTH_TOKEN=<REDACTED>"
+        "ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY"
         "ANTHROPIC_MODEL=claude-sonnet-4-6"
         "ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-4-5"
         "ANTHROPIC_DEFAULT_SONNET_MODEL=claude-sonnet-4-6"
@@ -138,7 +138,7 @@ function claude-official() {
 function claude-qwen() {
     local -a env_vars=(
         "ANTHROPIC_BASE_URL=https://www.packyapi.com"
-        "ANTHROPIC_AUTH_TOKEN=<REDACTED>"
+        "ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY"
         "ANTHROPIC_MODEL=qwen3.6-plus"
         "ANTHROPIC_DEFAULT_HAIKU_MODEL=qwen3.6-plus"
         "ANTHROPIC_DEFAULT_SONNET_MODEL=qwen3.6-plus"
@@ -153,7 +153,7 @@ function claude-qwen() {
 function claude-kimi() {
     local -a env_vars=(
         "ANTHROPIC_BASE_URL=https://api.siliconflow.cn"
-        "ANTHROPIC_AUTH_TOKEN=<REDACTED>"
+        "ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY"
         "ANTHROPIC_MODEL=Pro/moonshotai/Kimi-K2.5"
         "ANTHROPIC_DEFAULT_HAIKU_MODEL=Pro/moonshotai/Kimi-K2.5"
         "ANTHROPIC_DEFAULT_SONNET_MODEL=Pro/moonshotai/Kimi-K2.5"
@@ -168,7 +168,7 @@ function claude-kimi() {
 function claude-glm() {
     local -a env_vars=(
         "ANTHROPIC_BASE_URL=https://api.siliconflow.cn"
-        "ANTHROPIC_AUTH_TOKEN=<REDACTED>"
+        "ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY"
         "ANTHROPIC_MODEL=Pro/zai-org/GLM-5.1"
         "ANTHROPIC_DEFAULT_HAIKU_MODEL=Pro/zai-org/GLM-5.1"
         "ANTHROPIC_DEFAULT_SONNET_MODEL=Pro/zai-org/GLM-5.1"

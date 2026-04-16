@@ -6,7 +6,7 @@
       "env": {
         "JIRA_URL": "YOUR_JIRA_URL_HERE",
         "JIRA_EMAIL": "YOUR_JIRA_EMAIL_HERE",
-        "JIRA_API_TOKEN": "<REDACTED>"
+        "JIRA_API_TOKEN": "YOUR-API-KEY"
       },
       "description": "Jira issue tracking — search, create, update, comment, transition issues"
     },
@@ -14,7 +14,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "<REDACTED>"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR-API-KEY"
       },
       "description": "GitHub operations - PRs, issues, repos"
     },
@@ -22,7 +22,7 @@
       "command": "npx",
       "args": ["-y", "firecrawl-mcp"],
       "env": {
-        "FIRECRAWL_API_KEY": "<REDACTED>"
+        "FIRECRAWL_API_KEY": "YOUR-API-KEY"
       },
       "description": "Web scraping and crawling"
     },
@@ -85,7 +85,7 @@
       "command": "npx",
       "args": ["-y", "exa-mcp-server"],
       "env": {
-        "EXA_API_KEY": "<REDACTED>"
+        "EXA_API_KEY": "YOUR-API-KEY"
       },
       "description": "Web search, research, and data ingestion via Exa API — prefer task-scoped use for broader research after GitHub search and primary docs"
     },
@@ -121,7 +121,7 @@
       "command": "npx",
       "args": ["-y", "@browserbasehq/mcp-server-browserbase"],
       "env": {
-        "BROWSERBASE_API_KEY": "<REDACTED>"
+        "BROWSERBASE_API_KEY": "YOUR-API-KEY"
       },
       "description": "Cloud browser sessions via Browserbase"
     },
@@ -129,7 +129,7 @@
       "type": "http",
       "url": "https://api.browser-use.com/mcp",
       "headers": {
-        "x-browser-use-api-key": "<REDACTED>"
+        "x-browser-use-api-key": "YOUR-API-KEY"
       },
       "description": "AI browser agent for web tasks"
     },
@@ -154,7 +154,7 @@
       "env": {
         "CONFLUENCE_BASE_URL": "YOUR_CONFLUENCE_URL_HERE",
         "CONFLUENCE_EMAIL": "YOUR_EMAIL_HERE",
-        "CONFLUENCE_API_TOKEN": "<REDACTED>"
+        "CONFLUENCE_API_TOKEN": "YOUR-API-KEY"
       },
       "description": "Confluence Cloud integration — search pages, retrieve content, explore spaces"
     },
@@ -162,7 +162,7 @@
       "command": "python3",
       "args": ["-m", "evalview", "mcp", "serve"],
       "env": {
-        "OPENAI_API_KEY": "<REDACTED>"
+        "OPENAI_API_KEY": "YOUR-API-KEY"
       },
       "description": "AI agent regression testing — snapshot behavior, detect regressions in tool calls and output quality. 8 tools: create_test, run_snapshot, run_check, list_tests, validate_skill, generate_skill_tests, run_skill_test, generate_visual_report. API key optional — deterministic checks (tool diff, output hash) work without it. Install: pip install \"evalview>=0.5,<1\""
     }

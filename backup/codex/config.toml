@@ -71,7 +71,7 @@ url = "https://mcp.deepwiki.com/mcp"
 startup_timeout_sec = 60
 
 [mcp_servers.exa]
-url = "https://mcp.exa.ai/mcp?exaApiKey=<REDACTED>"
+url = "https://mcp.exa.ai/mcp?exaApiKey=YOUR-API-KEY"
 startup_timeout_sec = 60
 
 [mcp_servers.open-websearch]

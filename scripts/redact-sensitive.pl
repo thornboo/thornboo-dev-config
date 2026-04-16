@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 my $path = shift @ARGV or die "path is required\n";
+my $placeholder = 'YOUR-API-KEY';
 
 sub slurp_file {
   my ($file_path) = @_;
@@ -78,7 +79,7 @@ sub redact_query_params {
   $value =~ s{
     ([?&][^=&?#"'\s]*?(?:api(?:[_-]?|)key|access(?:[_-]?|)token|refresh(?:[_-]?|)token|auth(?:[_-]?|)token|authorization|client(?:[_-]?|)secret|bearer(?:[_-]?|)token|session(?:[_-]?|)token|id(?:[_-]?|)token|token|secret|password|passwd)[^=&?#"'\s]*?=)
     ([^&#"'\s]+)
-  }{$1 . '<REDACTED>'}gixe;
+  }{$1 . $placeholder}gixe;
 
   return $value;
 }
@@ -86,7 +87,7 @@ sub redact_query_params {
 sub redact_secret_literals {
   my ($value) = @_;
 
-  $value =~ s{sk-[A-Za-z0-9_-]{12,}|github_pat_[A-Za-z0-9_]+|AIza[0-9A-Za-z_-]+}{<REDACTED>}g;
+  $value =~ s{sk-[A-Za-z0-9_-]{12,}|github_pat_[A-Za-z0-9_]+|AIza[0-9A-Za-z_-]+}{$placeholder}g;
 
   return $value;
 }
@@ -104,9 +105,9 @@ sub redact_env_assignments_in_line {
 
     if ($value =~ /^(["']).*\1$/) {
       $quote = substr($value, 0, 1);
-      $prefix . $quote . '<REDACTED>' . $quote;
+      $prefix . $quote . $placeholder . $quote;
     } else {
-      $prefix . '<REDACTED>';
+      $prefix . $placeholder;
     }
   }gex;
 
@@ -122,7 +123,7 @@ sub redact_line {
     my ($prefix, $key, $quote, $value) = ($1, $3, $4, $5);
 
     if (is_sensitive_key($key)) {
-      $prefix . $quote . '<REDACTED>' . $quote;
+      $prefix . $quote . $placeholder . $quote;
     } else {
       $prefix . $quote . redact_secret_literals(redact_query_params($value)) . $quote;
     }
@@ -134,7 +135,7 @@ sub redact_line {
     my ($prefix, $key, $quote, $value, $suffix) = ($1, $2, $3, $4, $5 // '');
 
     if (is_sensitive_key($key)) {
-      $prefix . $quote . '<REDACTED>' . $quote . $suffix;
+      $prefix . $quote . $placeholder . $quote . $suffix;
     } else {
       $prefix . $quote . redact_secret_literals(redact_query_params($value)) . $quote . $suffix;
     }
@@ -146,7 +147,7 @@ sub redact_line {
     my ($prefix, $key, $value, $suffix) = ($1, $2, $3, $4 // '');
 
     if (is_sensitive_key($key)) {
-      $prefix . '<REDACTED>' . $suffix;
+      $prefix . $placeholder . $suffix;
     } else {
       $prefix . redact_secret_literals(redact_query_params($value)) . $suffix;
     }

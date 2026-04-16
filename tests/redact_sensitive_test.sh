@@ -46,8 +46,8 @@ json_case() {
 DATA
 
   run_redact "$path"
-  assert_contains "$path" '"apiKey":"<REDACTED>"'
-  assert_contains "$path" '"token":"<REDACTED>"'
+  assert_contains "$path" '"apiKey":"YOUR-API-KEY"'
+  assert_contains "$path" '"token":"YOUR-API-KEY"'
   assert_contains "$path" '"theme":"dark"'
   assert_not_contains "$path" 'test-secret-value'
 }
@@ -62,7 +62,7 @@ DATA
 
   run_redact "$path"
   assert_contains "$path" 'bearer_token_env_var = "GITHUB_PAT_TOKEN"'
-  assert_contains "$path" 'exaApiKey=<REDACTED>'
+  assert_contains "$path" 'exaApiKey=YOUR-API-KEY'
   assert_contains "$path" 'mode=stdio'
   assert_not_contains "$path" 'real-url-secret'
 }
@@ -79,8 +79,8 @@ local -a env_vars=(
 DATA
 
   run_redact "$path"
-  assert_contains "$path" 'export GITHUB_PAT_TOKEN=<REDACTED>'
-  assert_contains "$path" '"ANTHROPIC_AUTH_TOKEN=<REDACTED>"'
+  assert_contains "$path" 'export GITHUB_PAT_TOKEN=YOUR-API-KEY'
+  assert_contains "$path" '"ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY"'
   assert_contains "$path" '"ANTHROPIC_BASE_URL=http://127.0.0.1:8080"'
   assert_not_contains "$path" 'github-token-test-value'
   assert_not_contains "$path" 'anthropic-test-secret'
@@ -95,7 +95,7 @@ note=keep-this
 DATA
 
   run_redact "$path"
-  assert_contains "$path" 'token=<REDACTED>'
+  assert_contains "$path" 'token=YOUR-API-KEY'
   assert_contains "$path" 'note=keep-this'
   assert_not_contains "$path" 'secret-token-value'
 }

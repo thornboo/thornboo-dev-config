@@ -4,7 +4,8 @@ set -euo pipefail
 
 readonly SYNC_LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_DIR="$(cd "$SYNC_LIB_DIR/.." && pwd)"
-readonly REDACTED_PLACEHOLDER="<REDACTED>"
+readonly BACKUP_DIR="$REPO_DIR/backup"
+readonly REDACTED_PLACEHOLDER="YOUR-API-KEY"
 readonly RECORD_DIR_NAME="sync-records"
 
 # -----------------------------------------------------------------------------
@@ -317,13 +318,13 @@ tool_home_path() {
 
 tool_repo_path() {
   case "$1" in
-    claude) printf '%s/claude' "$REPO_DIR" ;;
-    codex) printf '%s/codex' "$REPO_DIR" ;;
-    gemini) printf '%s/gemini' "$REPO_DIR" ;;
-    zshrc) printf '%s/zsh/.zshrc' "$REPO_DIR" ;;
-    kitty) printf '%s/kitty' "$REPO_DIR" ;;
-    snow) printf '%s/snow' "$REPO_DIR" ;;
-    agents) printf '%s/AGENTS.md' "$REPO_DIR" ;;
+    claude) printf '%s/claude' "$BACKUP_DIR" ;;
+    codex) printf '%s/codex' "$BACKUP_DIR" ;;
+    gemini) printf '%s/gemini' "$BACKUP_DIR" ;;
+    zshrc) printf '%s/zsh/.zshrc' "$BACKUP_DIR" ;;
+    kitty) printf '%s/kitty' "$BACKUP_DIR" ;;
+    snow) printf '%s/snow' "$BACKUP_DIR" ;;
+    agents) printf '%s/home/AGENTS.md' "$BACKUP_DIR" ;;
   esac
 }
 
@@ -359,10 +360,15 @@ build_exclude_patterns() {
       EXCLUDE_PATTERNS=(
         backups/
         cache/
+        .superpowers/
+        bash-commands.log
         file-history/
         history.jsonl
         settings.local.json
+        cost-tracker.log
         ccline/ccline
+        ecc/install-state.json
+        ecc/state.db
         homunculus/projects/
         homunculus/projects.json
         metrics/
@@ -372,6 +378,7 @@ build_exclude_patterns() {
         plugins/install-counts-cache.json
         plugins/marketplaces/
         projects/
+        session-data/
         session-env/
         sessions/
         shell-snapshots/
@@ -398,14 +405,20 @@ build_exclude_patterns() {
         history.jsonl
         .DS_Store
       )
+      if [[ "$ACTION" == "update" ]]; then
+        EXCLUDE_PATTERNS+=(auth.json)
+      fi
       ;;
     gemini)
       EXCLUDE_PATTERNS=(
         history/
+        .env
+        .env.*
         tmp/
         installation_id
         projects.json
         state.json
+        trustedFolders.json
         .DS_Store
       )
       ;;

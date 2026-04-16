@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 my ($source_path, $destination_path, $output_path) = @ARGV;
+my $placeholder = 'YOUR-API-KEY';
 
 die "source, destination, and output paths are required\n"
   unless defined $source_path && defined $destination_path && defined $output_path;
@@ -85,11 +86,11 @@ sub merge_query_placeholders {
   }
 
   $merged_value =~ s{
-    ([?&])([^=&?#"'\s]+)=<REDACTED>
+    ([?&])([^=&?#"'\s]+)=YOUR-API-KEY
   }{
     my ($separator, $name) = ($1, $2);
 
-    if (exists $destination_params{$name} && $destination_params{$name} ne '<REDACTED>') {
+    if (exists $destination_params{$name} && $destination_params{$name} ne $placeholder) {
       $separator . $name . '=' . $destination_params{$name};
     } else {
       $&;
@@ -122,9 +123,9 @@ $source_content =~ s{
   my $normalized_key = normalize_key($key);
   my $destination_value = $all_values{$normalized_key};
 
-  if (is_sensitive_key($key) && defined $destination_value && $destination_value ne '<REDACTED>') {
+  if (is_sensitive_key($key) && defined $destination_value && $destination_value ne $placeholder) {
     $prefix . $quote . $destination_value . $quote;
-  } elsif ($value =~ /<REDACTED>/ && defined $destination_value) {
+  } elsif ($value =~ /\Q$placeholder\E/ && defined $destination_value) {
     $prefix . $quote . merge_query_placeholders($value, $destination_value) . $quote;
   } else {
     $&;
@@ -138,9 +139,9 @@ $source_content =~ s{
   my $normalized_key = normalize_key($key);
   my $destination_value = $all_values{$normalized_key};
 
-  if (is_sensitive_key($key) && defined $destination_value && $destination_value ne '<REDACTED>') {
+  if (is_sensitive_key($key) && defined $destination_value && $destination_value ne $placeholder) {
     $prefix . $quote . $destination_value . $quote . $suffix;
-  } elsif ($value =~ /<REDACTED>/ && defined $destination_value) {
+  } elsif ($value =~ /\Q$placeholder\E/ && defined $destination_value) {
     $prefix . $quote . merge_query_placeholders($value, $destination_value) . $quote . $suffix;
   } else {
     $&;
@@ -154,9 +155,9 @@ $source_content =~ s{
   my $normalized_key = normalize_key($key);
   my $destination_value = $all_values{$normalized_key};
 
-  if (is_sensitive_key($key) && defined $destination_value && $destination_value !~ /<REDACTED>/) {
+  if (is_sensitive_key($key) && defined $destination_value && $destination_value !~ /\Q$placeholder\E/) {
     $prefix . $destination_value . $suffix;
-  } elsif ($value =~ /<REDACTED>/ && defined $destination_value) {
+  } elsif ($value =~ /\Q$placeholder\E/ && defined $destination_value) {
     $prefix . merge_query_placeholders($value, $destination_value) . $suffix;
   } else {
     $&;

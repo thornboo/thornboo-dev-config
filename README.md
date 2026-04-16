@@ -1,24 +1,29 @@
 # thornboo-dev-config
 
-个人 AI 开发工具配置备份仓库，统一管理 Claude Code、Codex、Gemini、Zsh、Kitty、Snow 与全局 `AGENTS.md`。
+个人 AI 开发工具配置备份仓库。这个仓库分成两层：根目录是同步工具本身，`backup/` 才是从本机全局配置备份出来的内容。
 
 ## 目录结构
 
 ```text
 thornboo-dev-config/
-├── claude/              # Claude Code 全局配置
-├── codex/               # Codex 全局配置
-├── gemini/              # Gemini CLI 全局配置
-├── kitty/               # Kitty 全局配置
-├── snow/                # Snow 全局配置
-├── zsh/                 # Zsh 全局配置
-├── sync-records/        # 最近一次运行日志、摘要、冲突记录、历史记录
-├── AGENTS.md            # 全局 Agent 指令 (~/AGENTS.md)
-├── update               # 备份命令（无参数备份全部）
-├── use                  # 应用命令（将仓库配置写回本机）
-├── sync.sh              # 兼容入口，内部转发到 update
+├── backup/                 # 备份出来的个人配置快照
+│   ├── claude/             # ~/.claude/ 的可备份配置
+│   ├── codex/              # ~/.codex/ 的可备份配置
+│   ├── gemini/             # ~/.gemini/ 的可备份配置
+│   ├── home/AGENTS.md      # ~/AGENTS.md 的备份，不是本仓库开发指令
+│   ├── kitty/              # Kitty 全局配置
+│   ├── snow/               # ~/.snow/ 的可备份配置
+│   └── zsh/.zshrc          # ~/.zshrc 的备份
+├── scripts/                # 同步、脱敏、合并脚本
+├── tests/                  # 同步与脱敏回归测试
+├── update                  # 备份命令（无参数备份全部）
+├── use                     # 应用命令（将仓库配置写回本机）
+├── sync.sh                 # 兼容入口，内部转发到 update
+├── README.md               # 本项目说明
 └── .gitignore
 ```
+
+> 说明：根目录不再放被备份的 `AGENTS.md`，避免误解成“本项目专用指令”。被备份的全局 agent 指令位于 `backup/home/AGENTS.md`。
 
 ## 支持的备份目标
 
@@ -30,7 +35,7 @@ thornboo-dev-config/
 - `zshrc` — Zsh 全局配置文件
 - `kitty` — Kitty 终端全局配置
 - `snow` — Snow 全局配置
-- `agents` — 全局 `AGENTS.md`
+- `agents` — 全局 `~/AGENTS.md`
 
 ## 使用方法
 
@@ -78,13 +83,16 @@ thornboo-dev-config/
 
 ## 安全模型
 
-这个仓库默认按“可公开审阅但不含真实 secret”的方式备份配置：
+这个仓库默认按“可公开审阅但不含真实 secret / 本地隐私路径”的方式备份配置：
 
 - **会脱敏**：配置类文件中的常见 secret 字段，如 `api_key`、`token`、`secret`、`password`，以及 URL query 中的 key/token。
+- **占位符**：脱敏后的 secret 使用 `YOUR-API-KEY`，表达“这里需要你自己的真实值”。
 - **会跳过**：回灌时默认不覆盖 `auth.json`、`.env`、`credentials.json`、`tokens.json` 等敏感文件。
-- **会合并**：仓库文件包含 `<REDACTED>` 时，`use` 会尝试从本机旧文件补回真实 secret；补不回来就跳过并记录冲突。
-- **会排除**：会话、历史、缓存、sqlite、临时目录、Claude inbox、Kitty `*.bak` 等运行时或备份文件不会进入仓库。
+- **会合并**：仓库文件包含 `YOUR-API-KEY` 时，`use` 会尝试从本机旧文件补回真实 secret；补不回来就跳过并记录冲突。
+- **会排除**：会话、历史、缓存、sqlite、临时目录、Claude inbox、Claude Superpowers brainstorm、命令/成本日志、Gemini trusted folders 等运行时或本地隐私文件不会进入仓库。
 - **不会加密**：脚本只做脱敏和跳过，不负责加密保存 secret；真实 secret 仍应放在本机环境变量或工具自己的认证文件里。
+
+示例：仓库里会写成 `ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY`，本机实际使用时应由环境变量、工具认证文件或 `use` 的本机合并逻辑补回真实 token。
 
 `sync-records/` 会留在本机仓库目录中便于审计，但默认被 `.gitignore` 忽略，不随 Git 提交。
 
@@ -111,8 +119,8 @@ thornboo-dev-config/
 
 当前冲突处理策略：
 
-- `update`：以本机配置为准，写入仓库，并对敏感内容脱敏
-- `use` 普通文件：以仓库为准，覆盖本机
+- `update`：以本机配置为准，写入 `backup/`，并对敏感内容脱敏
+- `use` 普通文件：以 `backup/` 为准，覆盖本机
 - `use` 敏感文件：默认跳过，不覆盖本机真实 secret
 - `use` 脱敏文件：优先合并本机已有 secret；无法恢复就跳过，并写入 `sync-records/conflicts.log`
 
@@ -120,41 +128,33 @@ thornboo-dev-config/
 
 下面这些路径优先按官方默认位置处理；脚本不会在你的 Home 下乱扫：
 
-- `claude` → `~/.claude/`
-- `codex` → `~/.codex/`
-- `gemini` → `~/.gemini/`
-- `zshrc` → `${ZDOTDIR:-$HOME}/.zshrc`
-- `kitty` → 优先 `KITTY_CONFIG_DIRECTORY`；否则 Linux/通用走 `${XDG_CONFIG_HOME:-$HOME/.config}/kitty/`；macOS 默认走 `~/Library/Preferences/kitty/`
-- `snow` → `~/.snow/`
-- `agents` → `~/AGENTS.md`
-
-## 官方路径依据说明
-
-本次实现按官方/约定俗成的默认配置位置设计：
-
-- Zsh 使用 `${ZDOTDIR:-$HOME}` 作为 dotfiles 根目录，`~/.zshrc` 是标准用户级配置文件
-- Kitty 支持 `KITTY_CONFIG_DIRECTORY`，否则使用平台默认配置目录
-- Codex、Gemini、Claude、Snow 采用各自 CLI 约定的用户级配置目录
-
-当前运行环境无法直接联网抓取官方文档原文，所以 README 里先写明了采用的“官方默认路径约定”和脚本解析逻辑。后续如果你愿意，我可以在可联网环境下继续补上具体官方文档链接与引用说明。
+| 目标 | 本机来源/写回路径 | 仓库备份路径 |
+|------|------------------|--------------|
+| `claude` | `~/.claude/` | `backup/claude/` |
+| `codex` | `~/.codex/` | `backup/codex/` |
+| `gemini` | `~/.gemini/` | `backup/gemini/` |
+| `zshrc` | `${ZDOTDIR:-$HOME}/.zshrc` | `backup/zsh/.zshrc` |
+| `kitty` | `KITTY_CONFIG_DIRECTORY` 或平台默认 Kitty 配置目录 | `backup/kitty/` |
+| `snow` | `~/.snow/` | `backup/snow/` |
+| `agents` | `~/AGENTS.md` | `backup/home/AGENTS.md` |
 
 ## 备份策略
 
-各工具只备份配置文件，运行时数据、历史记录、缓存等均排除在外：
+各工具只备份可复用配置文件，运行时数据、历史记录、缓存、日志、本机绝对路径等均排除在外：
 
 | 目标 | 备份内容 | 排除内容 |
 |------|---------|---------|
-| Claude Code | 全局配置、rules、skills、主题、插件元数据 | sessions、history、cache、tasks、teams inbox、telemetry、运行时目录 |
-| Codex | 全局配置、用户技能、版本信息 | sessions、logs、sqlite、`.tmp`、`tmp`、运行时状态 |
-| Gemini | 全局配置、trusted folders、`.env` | history、tmp、state、installation id |
-| Zsh | `.zshrc` | 无额外扫描 |
+| Claude Code | 全局配置、rules、skills、主题、插件元数据 | sessions、session-data、history、cache、tasks、teams inbox、telemetry、Superpowers brainstorm、命令/成本日志、ECC install-state 等运行时或本机状态 |
+| Codex | 全局配置、用户技能、版本信息 | `auth.json`、sessions、logs、sqlite、`.tmp`、`tmp`、运行时状态 |
+| Gemini | 非敏感全局配置 | `.env`、`trustedFolders.json`、history、tmp、state、installation id |
+| Zsh | `.zshrc`（脱敏后） | 无额外扫描 |
 | Kitty | `kitty.conf` 及配置目录内文件 | `.DS_Store`、`*.bak`、`*.backup` |
-| Snow | 全局配置、profiles | history、log、sessions、snapshots、notebook 等运行时目录 |
+| Snow | 全局配置、profiles（脱敏后） | history、log、sessions、snapshots、notebook 等运行时目录 |
 | AGENTS | `~/AGENTS.md` | 无 |
 
 另外：
 
-- `update` 在备份 `claude`、`codex`、`gemini`、`zshrc`、`snow` 等配置文件时会自动脱敏常见 secret 字段
+- `update` 在备份 `claude`、`codex`、`gemini`、`zshrc`、`kitty`、`snow` 等配置文件时会自动脱敏常见 secret 字段
 - `update` 无参数时会备份全部支持工具
 - `sync.sh` 仍可用，但只是兼容转发到 `./update`
 
@@ -163,4 +163,4 @@ thornboo-dev-config/
 如果你后面想继续增强，可以考虑：
 
 - 给 `use` 增加 `--backup`，应用前先备份本机旧文件
-- 在可联网环境下补全官方文档链接与脚本路径来源说明
+- 给 `update` 增加 `--strict-audit`，提交前扫描绝对路径、日志文件和旧占位符
