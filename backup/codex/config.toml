@@ -1,94 +1,132 @@
+# ============================================================
 # oh-my-codex top-level settings (must be before any [table])
+# ============================================================
 notify = ["node", "/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/scripts/notify-hook.js"]
-model_reasoning_effort = "high"
 developer_instructions = "You have oh-my-codex installed. AGENTS.md is your orchestration brain and the main orchestration surface. Use skill/keyword routing like $name plus spawned role-specialized subagents for specialized work. Codex native subagents are available via .codex/agents and may be used for independent parallel subtasks within a single session or team pane. Skills are loaded from installed SKILL.md files under .codex/skills, not from native agent TOMLs. Use workflow skills via $name when explicitly invoked or clearly routed by AGENTS.md. Treat installed prompts as narrower internal execution surfaces under AGENTS.md authority, even when user-facing docs prefer $name keywords."
+
+# ============================================================
+# 模型与上下文配置
+# ============================================================
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
-
-# =============================================================
-# Codex 全局配置文件  ~/.codex/config.toml
-# 文档: https://developers.openai.com/codex/config-reference
-# =============================================================
-
-
-# ─────────────────────────────────────────
-# 模型配置
-# ─────────────────────────────────────────
-
-# 使用自定义 provider（见下方 model_providers 配置）
+model = "gpt-5.4"
 model_provider = "octopus"
-model          = "gpt-5.4"
+model_reasoning_effort = "high"
+model_verbosity = "medium"
 
-# 推理强度: minimal | low | medium | high | xhigh
-
-# 不在服务端存储响应内容（隐私保护）
-disable_response_storage = true
-
-# 操作审批由用户确认（而非自动放行）
-approvals_reviewer = "user"
-
-
-# ─────────────────────────────────────────
-# 自定义模型 Provider
-# ─────────────────────────────────────────
-# octopus 是本地反代，把请求转发到实际的 API
-
+# 自定义 Provider
 [model_providers.octopus]
-name     = "octopus"
+name = "octopus"
 base_url = "http://127.0.0.1:8080/v1"
 
+# ============================================================
+# 沙箱、审批 & 隐私
+# ============================================================
+[sandbox]
+mode = "workspace-write"
+network_access = true
 
+[approval]
+policy = "on-request"
+reviewer = "user"
+
+[privacy]
+disable_response_storage = true
+
+# ============================================================
+# MCP Servers
+# ============================================================
 [mcp_servers.context7]
+enabled = true
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
 startup_timeout_sec = 60
 
 [mcp_servers.blender]
+enabled = true
 command = "uvx"
 args = ["blender-mcp"]
 startup_timeout_sec = 90
 
 [mcp_servers.pencil]
+enabled = true
 command = "/Applications/Pencil.app/Contents/Resources/app.asar.unpacked/out/mcp-server-darwin-arm64"
 args = ["--app", "desktop"]
 
 [mcp_servers.github]
+enabled = true
 url = "https://api.githubcopilot.com/mcp/"
 startup_timeout_sec = 60
 bearer_token_env_var = "GITHUB_PAT_TOKEN"
 
 [mcp_servers.serena]
+enabled = true
 command = "serena"
 args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
 
 [mcp_servers.playwright]
+enabled = true
 command = "npx"
 args = ["@playwright/mcp@latest"]
 startup_timeout_sec = 15
 
 [mcp_servers.deepwiki]
+enabled = true
 url = "https://mcp.deepwiki.com/mcp"
 startup_timeout_sec = 60
 
 [mcp_servers.exa]
-url = "https://mcp.exa.ai/mcp?exaApiKey=YOUR-API-KEY"
+enabled = true
+url = "https://mcp.exa.ai/mcp"
 startup_timeout_sec = 60
+[mcp_servers.exa.headers]
+x-api-key = YOUR-API-KEY
 
 [mcp_servers.open-websearch]
+enabled = true
 command = "npx"
 args = ["open-websearch@latest"]
 startup_timeout_sec = 60
-
 [mcp_servers.open-websearch.env]
 DEFAULT_SEARCH_ENGINE = "duckduckgo"
 MODE = "stdio"
 
+# ============================================================
+# OMX 内置 MCP Servers
+# ============================================================
+[mcp_servers.omx_state]
+command = "node"
+args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/state-server.js"]
+enabled = true
+startup_timeout_sec = 5
 
-# ─────────────────────────────────────────
-# 信任项目
-# ─────────────────────────────────────────
-# 只有 trusted 的项目才会加载项目级 .codex/config.toml 和 AGENTS.md
+[mcp_servers.omx_memory]
+command = "node"
+args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/memory-server.js"]
+enabled = true
+startup_timeout_sec = 5
 
+[mcp_servers.omx_code_intel]
+command = "node"
+args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/code-intel-server.js"]
+enabled = true
+startup_timeout_sec = 10
+
+[mcp_servers.omx_trace]
+command = "node"
+args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/trace-server.js"]
+enabled = true
+startup_timeout_sec = 5
+
+[mcp_servers.omx_wiki]
+command = "node"
+args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/wiki-server.js"]
+enabled = true
+startup_timeout_sec = 5
+
+# ============================================================
+# 信任项目列表
+# ============================================================
 [projects."/Users/thornboo"]
 trust_level = "trusted"
 
@@ -121,56 +159,44 @@ trust_level = "trusted"
 
 [projects."/Users/thornboo/codeGithub/thornboo-dev-config"]
 trust_level = "trusted"
+
+[projects."/Users/thornboo/codeGithub/OpenMOSS"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeGithub/AgentBoard"]
+trust_level = "trusted"
+
+[projects."/Users/thornboo/codeTest/test"]
+trust_level = "trusted"
+
+# ============================================================
+# 功能开关
+# ============================================================
 [features]
 multi_agent = true
 child_agents_md = true
 codex_hooks = true
+memories = true
 
-[env]
-USE_OMX_EXPLORE_CMD = "1"
+# ============================================================
+# 记忆与历史
+# ============================================================
+[memories]
+use_memories = true
+generate_memories = true
+max_rollout_age_days = 30
+min_rollout_idle_hours = 12
 
+[history]
+persistence = "save-all"
+max_bytes = 20971520  # 20MB
+
+# ============================================================
+# Agent 运行时配置
+# ============================================================
 [agents]
 max_threads = 6
 max_depth = 2
 
-# ============================================================
-# oh-my-codex (OMX) Configuration
-# Managed by omx setup - manual edits preserved on next setup
-# ============================================================
-
-# OMX State Management MCP Server
-[mcp_servers.omx_state]
-command = "node"
-args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/state-server.js"]
-enabled = true
-startup_timeout_sec = 5
-
-# OMX Project Memory MCP Server
-[mcp_servers.omx_memory]
-command = "node"
-args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/memory-server.js"]
-enabled = true
-startup_timeout_sec = 5
-
-# OMX Code Intelligence MCP Server (LSP diagnostics, AST search)
-[mcp_servers.omx_code_intel]
-command = "node"
-args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/code-intel-server.js"]
-enabled = true
-startup_timeout_sec = 10
-
-# OMX Trace MCP Server (agent flow timeline & statistics)
-[mcp_servers.omx_trace]
-command = "node"
-args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/trace-server.js"]
-enabled = true
-startup_timeout_sec = 5
-
-# OMX Wiki MCP Server (persistent project knowledge base)
-[mcp_servers.omx_wiki]
-command = "node"
-args = ["/Users/thornboo/.local/share/mise/installs/node/24.13.0/lib/node_modules/oh-my-codex/dist/mcp/wiki-server.js"]
-enabled = true
-startup_timeout_sec = 5
-# ============================================================
-# End oh-my-codex
+[env]
+USE_OMX_EXPLORE_CMD = "1"

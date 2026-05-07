@@ -112,8 +112,9 @@ case ":$PATH:" in
 *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
-# Github Server MCP API Keys
+# MCP Server API Keys
 export GITHUB_PAT_TOKEN=YOUR-API-KEY
+export EXA_API_KEY=YOUR-API-KEY
 
 # =================================================================
 # 6. Claude Code 快捷启动函数配置区
@@ -175,6 +176,22 @@ function claude-glm() {
         "ANTHROPIC_DEFAULT_OPUS_MODEL=Pro/zai-org/GLM-5.1"
         "ANTHROPIC_REASONING_MODEL=Pro/zai-org/GLM-5.1"
         "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
+    )
+    env "${env_vars[@]}" claude "$@"
+}
+
+# 启动 claude 测试服务
+function claude-test() {
+    local -a env_vars=(
+        "ANTHROPIC_BASE_URL=http://192.168.0.240:8080"
+        "ANTHROPIC_AUTH_TOKEN=YOUR-API-KEY"
+        "ANTHROPIC_MODEL=claude-sonnet-4-6"
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-sonnet-4-6"
+        "ANTHROPIC_DEFAULT_SONNET_MODEL=claude-sonnet-4-6"
+        "ANTHROPIC_DEFAULT_OPUS_MODEL=claude-sonnet-4-6"
+        "ANTHROPIC_REASONING_MODEL=claude-sonnet-4-6"
+        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
+        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1"
     )
     env "${env_vars[@]}" claude "$@"
 }
